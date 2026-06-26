@@ -444,6 +444,7 @@ document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); 
 
 // ── CHAT WIDGET ──────────────────────────────────────────────
 const WEBHOOK = 'https://hook.eu1.make.com/YOUR_NEW_WEBHOOK_URL_HERE';
+const CORS_PROXY = 'https://cors-anywhere.herokuapp.com/';
 const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
 const geminiSubmit = document.getElementById('gemini-submit');
@@ -565,7 +566,7 @@ async function submitGemini(){
 
   let replyText = '';
   try {
-    const res = await fetch(WEBHOOK, {
+    const res = await fetch(CORS_PROXY + WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ message, timestamp: new Date().toISOString() })
