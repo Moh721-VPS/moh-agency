@@ -591,11 +591,24 @@ async function submitGemini(){
       data = null; 
     }
 
-    // Flexible key extraction
-    replyText =
-      (data && (data.response || data.result || data.answer || data.text || data.output || data.message || data.reply)) ||
-      (typeof raw === 'string' && raw.length && raw !== 'Accepted' ? raw : null) ||
-      null;
+    // Flexible key extraction - try all possible response keys
+    if(data && typeof data === 'object') {
+      // Try common response keys
+      replyText = data.response || data.result || data.answer || data.text || data.output || data.message || data.reply || data.body || data.content;
+      
+      // If still nothing, grab the first non-empty string value
+      if(!replyText) {
+        for(let key in data) {
+          if(typeof data[key] === 'string' && data[key].length > 0 && data[key] !== 'Accepted') {
+            replyText = data[key];
+            console.log('Found response in key:', key);
+            break;
+          }
+        }
+      }
+    } else if(typeof raw === 'string' && raw.length > 8 && raw !== 'Accepted') {
+      replyText = raw;
+    }
 
     console.log('Final replyText:', replyText);
 
