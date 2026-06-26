@@ -571,6 +571,8 @@ async function submitGemini(){
       body: JSON.stringify({ message, timestamp: new Date().toISOString() })
     });
 
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    
     const raw = await res.text();
     let data;
     try { data = JSON.parse(raw); } catch { data = null; }
