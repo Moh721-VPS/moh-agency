@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Moh Agency — AI Automation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600;9..40,700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0A0A0A;
+  --bg2:#111111;
+  --bg3:#181818;
+  --border:#222222;
+  --border2:#303030;
+  --text:#FFFFFF;
+  --muted:#777777;
+  --dim:#3A3A3A;
+  --f:'DM Sans',system-ui,-apple-system,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--f);background:var(--bg);color:var(--text);overflow-x:hidden;-webkit-font-smoothing:antialiased;cursor:none}
+
+/* CURSOR */
+#cd,#cr{pointer-events:none;position:fixed;z-index:9999;border-radius:50%;top:0;left:0}
+#cd{width:7px;height:7px;background:#fff;transform:translate(-50%,-50%);transition:transform .1s}
+#cr{width:36px;height:36px;border:1px solid rgba(255,255,255,.22);transform:translate(-50%,-50%);transition:width .2s,height .2s}
+body:hover #cd{opacity:1}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:100;padding:20px 52px;display:flex;align-items:center;justify-content:space-between;transition:background .4s,border-color .4s;border-bottom:1px solid transparent}
+nav.s{background:rgba(10,10,10,.9);border-bottom-color:var(--border);backdrop-filter:blur(20px)}
+.logo{font-size:15px;font-weight:600;letter-spacing:-.01em;color:var(--text);text-decoration:none;display:flex;align-items:center;gap:0}
+.slashes{color:var(--muted);letter-spacing:-.12em;margin-right:5px;font-weight:300}
+.nl{display:flex;align-items:center;gap:36px;list-style:none}
+.nl a{font-size:13px;color:var(--muted);text-decoration:none;transition:color .2s}
+.nl a:hover{color:var(--text)}
+.nbtn{padding:9px 20px;border:1px solid var(--border2);background:transparent;color:var(--text);font-family:var(--f);font-size:13px;font-weight:500;border-radius:7px;cursor:none;transition:background .2s,border-color .2s}
+.nbtn:hover{background:var(--bg2);border-color:#484848}
+
+/* HERO */
+#hero{min-height:100vh;padding:160px 52px 100px;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden}
+.hgrid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.028) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.028) 1px,transparent 1px);background-size:68px 68px;mask-image:radial-gradient(ellipse 70% 70% at 50% 50%,black 0%,transparent 100%)}
+.eyebrow{font-size:11px;font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--dim);margin-bottom:28px;display:inline-flex;align-items:center;gap:9px}
+.dot{width:5px;height:5px;border-radius:50%;background:var(--border2)}
+h1{font-size:clamp(54px,8.5vw,92px);font-weight:700;letter-spacing:-.055em;line-height:.95;max-width:860px;margin-bottom:26px}
+h1 em{font-style:normal;color:var(--muted)}
+.hsub{font-size:17px;color:var(--muted);max-width:440px;margin-bottom:48px;line-height:1.65;font-weight:300}
+.hbtns{display:flex;gap:12px}
+.bw{padding:14px 28px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-family:var(--f);font-size:14px;font-weight:600;cursor:none;transition:background .2s,transform .2s}
+.bw:hover{background:#ddd;transform:translateY(-2px)}
+.bg{padding:14px 28px;background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:8px;font-family:var(--f);font-size:14px;font-weight:400;cursor:none;transition:background .2s,border-color .2s}
+.bg:hover{background:var(--bg2);border-color:#484848}
+
+/* floating chips */
+.chips{position:absolute;right:52px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:14px}
+.chip{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px 20px;min-width:178px;transition:border-color .3s}
+.chip:hover{border-color:var(--border2)}
+.chip-val{font-size:30px;font-weight:700;letter-spacing:-.05em;line-height:1}
+.chip-lbl{font-size:12px;color:var(--muted);margin-top:5px}
+
+/* TICKER */
+#ticker{padding:44px 0;border-top:1px solid var(--border);border-bottom:1px solid var(--border);overflow:hidden}
+.tlbl{text-align:center;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:26px}
+.ttrack{display:flex;gap:60px;align-items:center;animation:tx 22s linear infinite;width:max-content}
+@keyframes tx{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.ttrack:hover{animation-play-state:paused}
+.pchip{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500;color:var(--dim);white-space:nowrap;transition:color .2s}
+.pchip:hover{color:var(--muted)}
+.pchip svg{opacity:.45;flex-shrink:0}
+
+/* SERVICES */
+#services{padding:120px 52px}
+.sh{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:56px}
+.stitle{font-size:34px;font-weight:700;letter-spacing:-.04em}
+.smeta{font-size:13px;color:var(--dim);padding-bottom:3px}
+.sgrid{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--border);border-radius:12px;overflow:hidden;gap:1px;background:var(--border)}
+.sc{background:var(--bg);padding:44px 38px;position:relative;transition:background .25s;cursor:default}
+.sc:hover{background:var(--bg2)}
+.snum{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--dim);margin-bottom:32px}
+.sicon{margin-bottom:18px;color:var(--muted)}
+.scard-title{font-size:19px;font-weight:600;letter-spacing:-.02em;margin-bottom:14px}
+.sdesc{font-size:13px;color:var(--muted);line-height:1.75;font-weight:300}
+.sarrow{position:absolute;bottom:36px;right:36px;width:28px;height:28px;border-radius:50%;border:1px solid var(--border);display:flex;align-items:center;justify-content:center;opacity:0;transform:translate(4px,4px);transition:all .3s;color:var(--muted)}
+.sc:hover .sarrow{opacity:1;transform:translate(0,0)}
+
+/* PROCESS */
+#process{padding:80px 52px 120px;border-top:1px solid var(--border)}
+.steps{margin-top:52px}
+.step{display:grid;grid-template-columns:60px 240px 1fr;gap:40px;align-items:start;padding:34px 0;border-top:1px solid var(--border);cursor:default}
+.step:last-child{border-bottom:1px solid var(--border)}
+.step:hover .sname{color:var(--text)}
+.sidx{font-size:12px;color:var(--dim);font-weight:500;padding-top:3px}
+.sname{font-size:21px;font-weight:600;letter-spacing:-.025em;color:var(--muted);transition:color .25s}
+.sinfo{font-size:13px;color:var(--dim);line-height:1.72}
+
+/* DEMO STRIP */
+#demo-strip{margin:0 52px;border:1px solid var(--border);border-radius:14px;padding:56px 64px;display:flex;align-items:center;justify-content:space-between;gap:40px;background:var(--bg2);transition:border-color .3s}
+#demo-strip:hover{border-color:var(--border2)}
+.ds-left h3{font-size:26px;font-weight:700;letter-spacing:-.04em;margin-bottom:10px}
+.ds-left p{font-size:14px;color:var(--muted);max-width:380px;line-height:1.6}
+.ds-right{display:flex;gap:12px;flex-shrink:0}
+
+/* CTA */
+#cta{padding:120px 52px;border-top:1px solid var(--border);text-align:center}
+.ctag{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);margin-bottom:22px;display:block}
+.ch{font-size:clamp(36px,5vw,58px);font-weight:700;letter-spacing:-.05em;max-width:540px;margin:0 auto 20px;line-height:1.02}
+.csub{font-size:15px;color:var(--muted);margin-bottom:36px}
+.cbtns{display:flex;gap:12px;justify-content:center}
+
+/* FOOTER */
+footer{padding:32px 52px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.flogo{font-size:14px;font-weight:600;color:var(--dim);letter-spacing:-.01em}
+.fright{display:flex;gap:28px;align-items:center}
+.fright a{font-size:12px;color:var(--dim);text-decoration:none;transition:color .2s}
+.fright a:hover{color:var(--muted)}
+.fright span{font-size:12px;color:var(--dim)}
+
+/* MODAL */
+.modal-wrap{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,.75);backdrop-filter:blur(10px);align-items:center;justify-content:center}
+.modal-wrap.open{display:flex}
+.mbox{background:var(--bg2);border:1px solid var(--border2);border-radius:16px;padding:40px;max-width:460px;width:90%;position:relative}
+.mclose{position:absolute;top:16px;right:18px;background:none;border:none;color:var(--muted);font-size:22px;cursor:none;transition:color .2s;line-height:1}
+.mclose:hover{color:var(--text)}
+.mtitle{font-size:22px;font-weight:700;letter-spacing:-.03em;margin-bottom:8px}
+.msub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
+.mi{width:100%;padding:12px 15px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--f);font-size:13px;margin-bottom:10px;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none}
+.mi:focus{border-color:var(--border2)}
+.mi::placeholder{color:var(--dim)}
+option{background:var(--bg3)}
+.msubmit{width:100%;padding:14px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-family:var(--f);font-size:14px;font-weight:600;cursor:none;margin-top:4px;transition:background .2s}
+.msubmit:hover{background:#ddd}
+
+/* TOAST */
+.toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 24px;font-size:14px;color:var(--text);z-index:300;transition:transform .4s ease,opacity .4s;opacity:0}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* REVEAL */
+.fu{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
+.fu.on{opacity:1;transform:translateY(0)}
+.d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
+
+@media(max-width:960px){
+  .chips{display:none}
+  .sgrid{grid-template-columns:1fr}
+  #demo-strip{flex-direction:column;align-items:flex-start}
+  .step{grid-template-columns:48px 1fr;grid-template-rows:auto auto}
+  .sinfo{grid-column:2}
+  nav{padding:18px 24px}
+  #hero,#services,#process,#cta{padding-left:24px;padding-right:24px}
+  #demo-strip{margin:0 24px;padding:36px 28px}
+  footer{padding:28px 24px}
+  .sh{padding:0}
+}
+</style>
+</head>
+<body>
+
+<div id="cd"></div>
+<div id="cr"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo"><span class="slashes">///</span>Moh_AGENCY</a>
+  <ul class="nl">
+    <li><a href="#services">Services</a></li>
+    <li><a href="#process">Process</a></li>
+    <li><a href="#cta">About</a></li>
+  </ul>
+  <button class="nbtn" onclick="openModal()">Get Started</button>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hgrid"></div>
+  <div class="eyebrow fu on"><span class="dot"></span>AI Automation Agency — Doha, Qatar</div>
+  <h1 class="fu on">Automate Your<br>Business <em>with AI</em></h1>
+  <p class="hsub fu on d1">Custom AI integrations and Make.com automations for forward-thinking businesses. Save time, cut costs, scale smarter.</p>
+  <div class="hbtns fu on d2">
+    <button class="bw" onclick="openModal()">Book a Call</button>
+    <button class="bg" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">View Services</button>
+  </div>
+
+</section>
+
+<!-- TICKER -->
+<div id="ticker">
+  <p class="tlbl">Trusted Integration Partners</p>
+  <div class="ttrack">
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Gemini</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Claude</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Gmail</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Telegram</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Google Sheets</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/></svg>Make.com</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Notion</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Airtable</div>
+    <!-- duplicate for seamless loop -->
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Gemini</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Claude</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Gmail</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>Telegram</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M3 15h18M9 3v18M15 3v18"/></svg>Google Sheets</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/></svg>Make.com</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Notion</div>
+    <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Airtable</div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="sh">
+    <h2 class="stitle fu">What We Do</h2>
+    <span class="smeta fu d1">03 services</span>
+  </div>
+  <div class="sgrid">
+    <div class="sc fu">
+      <div class="snum">01</div>
+      <svg class="sicon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2z"/><path d="M8 9h8M8 12h5"/><circle cx="16" cy="15" r="2"/></svg>
+      <h3 class="scard-title">AI Integration</h3>
+      <p class="sdesc">Connect Gemini, Claude, and other models directly into your workflows. Custom chatbots, content pipelines, and intelligent automation — built to your exact needs.</p>
+      <div class="sarrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
+    </div>
+    <div class="sc fu d1">
+      <div class="snum">02</div>
+      <svg class="sicon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+      <h3 class="scard-title">Make.com Automation</h3>
+      <p class="sdesc">Design and deploy complex multi-step workflows that connect your tools. From lead capture to full data synchronization — hands-free, 24 hours a day.</p>
+      <div class="sarrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
+    </div>
+    <div class="sc fu d2">
+      <div class="snum">03</div>
+      <svg class="sicon" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+      <h3 class="scard-title">Custom Solutions</h3>
+      <p class="sdesc">No templates. Every business is different. We scope, build, and hand off solutions tailored to your specific processes and growth goals — with full documentation.</p>
+      <div class="sarrow"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section id="process">
+  <div class="sh">
+    <h2 class="stitle fu">How It Works</h2>
+    <span class="smeta fu d1">04 steps</span>
+  </div>
+  <div class="steps">
+    <div class="step fu">
+      <span class="sidx">01</span>
+      <span class="sname">Discovery</span>
+      <p class="sinfo">We map your current processes, identify bottlenecks, and define what a successful automation looks like — built around your business in Doha or anywhere globally.</p>
+    </div>
+    <div class="step fu d1">
+      <span class="sidx">02</span>
+      <span class="sname">Design</span>
+      <p class="sinfo">We architect the full automation stack before writing a single scenario — selecting the right AI models, data flows, and platform combinations for your use case.</p>
+    </div>
+    <div class="step fu d2">
+      <span class="sidx">03</span>
+      <span class="sname">Build</span>
+      <p class="sinfo">We build, test, and iterate on your Make.com scenarios and AI integrations. Fast delivery — most clients are fully live within 90 days of kickoff.</p>
+    </div>
+    <div class="step fu d3">
+      <span class="sidx">04</span>
+      <span class="sname">Deploy</span>
+      <p class="sinfo">We launch, monitor, and hand off full documentation. Ongoing support available as your automation needs grow and evolve.</p>
+    </div>
+  </div>
+</section>
+
+<!-- DEMO STRIP -->
+<div id="demo-strip" class="fu">
+  <div class="ds-left">
+    <h3>See a live demo</h3>
+    <p>Watch a real Make.com scenario in action — from a Telegram message to an AI-generated summary, delivered back in seconds.</p>
+  </div>
+  <div class="ds-right">
+    <button class="bg" onclick="openDemo()">Watch Demo</button>
+    <button class="bw" onclick="openModal()">Book a Call</button>
+  </div>
+</div>
+
+<!-- GEMINI WIDGET -->
+<section id="gemini-widget" style="padding:120px 52px;border-top:1px solid var(--border)">
+  <div class="sh">
+    <h2 class="stitle fu">Try Gemini Live</h2>
+    <span class="smeta fu d1">AI-Powered Playground</span>
+  </div>
+  <div style="margin-top:44px;max-width:620px">
+    <div style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;padding:32px;position:relative" class="fu d1">
+      <div style="margin-bottom:20px">
+        <label style="display:block;font-size:13px;color:var(--dim);margin-bottom:10px;font-weight:500">Ask Gemini Anything</label>
+        <textarea id="gemini-input" placeholder="Ask a question or request something..." style="width:100%;height:100px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:12px;color:var(--text);font-family:var(--f);font-size:13px;resize:none;outline:none;transition:border-color .2s;-webkit-appearance:none;appearance:none" spellcheck="false"></textarea>
+      </div>
+      <button id="gemini-submit" class="bw" style="width:100%;margin-bottom:12px" onclick="submitGemini()">Send to Gemini</button>
+      <p style="font-size:11px;color:var(--dim);text-align:center;margin-bottom:16px">This widget connects to your Make.com automation</p>
+      
+      <div id="gemini-response" style="margin-top:20px;padding:16px;background:var(--bg3);border:1px solid var(--border);border-radius:8px;display:none;max-height:200px;overflow-y:auto">
+        <p style="font-size:13px;color:var(--text);line-height:1.6;margin:0" id="response-text"></p>
+      </div>
+      
+
+
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="cta">
+  <span class="ctag fu">Ready when you are</span>
+  <h2 class="ch fu d1">Start automating today.</h2>
+  <p class="csub fu d2">Book a free 30-minute discovery call. No commitment.</p>
+  <div class="cbtns fu d3">
+    <button class="bw" onclick="openModal()">Book a Call</button>
+    <button class="bg">Contact Us</button>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="flogo"><span style="color:var(--dim);letter-spacing:-.12em">///</span>Moh_AGENCY</div>
+  <div class="fright">
+    <a href="#">Privacy</a>
+    <a href="#">Terms</a>
+    <a href="#">Doha, Qatar</a>
+    <span>© 2025</span>
+  </div>
+</footer>
+
+<!-- BOOKING MODAL -->
+<div class="modal-wrap" id="modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeModal()">×</button>
+    <h3 class="mtitle">Book a Discovery Call</h3>
+    <p class="msub">Tell us about your business and we will reach out within 24 hours.</p>
+    <input class="mi" type="text" placeholder="Your name" id="m-name">
+    <input class="mi" type="email" placeholder="Email address" id="m-email">
+    <input class="mi" type="text" placeholder="Business type (e.g. Real Estate, E-commerce)" id="m-biz">
+    <select class="mi" id="m-service">
+      <option value="">How can we help?</option>
+      <option>AI Integration</option>
+      <option>Make.com Automation</option>
+      <option>Custom Solution</option>
+      <option>Not sure yet</option>
+    </select>
+    <button class="msubmit" id="m-submit" onclick="submitModal()">Send Request</button>
+  </div>
+</div>
+
+<!-- DEMO MODAL -->
+<div class="modal-wrap" id="dmodal">
+  <div class="mbox" style="max-width:520px">
+    <button class="mclose" onclick="closeDemo()">×</button>
+    <h3 class="mtitle">Demo: Telegram to AI Summary</h3>
+    <p class="msub">A sample Make.com workflow. Drop a YouTube link in the Telegram group and receive an AI-generated Arabic summary in under 10 seconds.</p>
+    <div style="background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:24px;font-size:13px;color:var(--muted);line-height:1.8">
+      <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 16px;align-items:center">
+        <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 1</span><span>Telegram Watch trigger fires on new message</span>
+        <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 2</span><span>YouTube transcript extracted via HTTP module</span>
+        <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 3</span><span>Gemini 1.5 Flash generates structured Arabic summary</span>
+        <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 4</span><span>Result posted back to Telegram group</span>
+      </div>
+    </div>
+    <button class="msubmit" style="margin-top:20px" onclick="closeDemo();openModal()">Get This Built for You</button>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast">Request sent — we will be in touch within 24 hours.</div>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('s', scrollY > 60));
+
+const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), {threshold:.15});
+document.querySelectorAll('.fu').forEach(el => obs.observe(el));
+
+const cobs = new IntersectionObserver(entries => entries.forEach(e => {
+  if(!e.isIntersecting) return;
+  const t = parseInt(e.target.dataset.target);
+  if(isNaN(t)) return;
+  let n = 0, step = t / 60;
+  const tick = setInterval(() => {
+    n = Math.min(n + step, t);
+    e.target.textContent = Math.floor(n);
+    if(n >= t) clearInterval(tick);
+  }, 16);
+  cobs.unobserve(e.target);
+}), {threshold:.5});
+document.querySelectorAll('[data-target]').forEach(el => cobs.observe(el));
+
+let mx=0,my=0,rx=0,ry=0;
+const cd=document.getElementById('cd'),cr=document.getElementById('cr');
+document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cd.style.left=mx+'px'; cd.style.top=my+'px'; });
+(function loop(){ rx+=(mx-rx)*.14; ry+=(my-ry)*.14; cr.style.left=rx+'px'; cr.style.top=ry+'px'; requestAnimationFrame(loop); })();
+document.querySelectorAll('button,a,.sc,.step').forEach(el => {
+  el.addEventListener('mouseenter', () => { cr.style.width='52px'; cr.style.height='52px'; });
+  el.addEventListener('mouseleave', () => { cr.style.width='36px'; cr.style.height='36px'; });
+});
+
+function openModal(){ document.getElementById('modal').classList.add('open'); }
+function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function openDemo(){ document.getElementById('dmodal').classList.add('open'); }
+function closeDemo(){ document.getElementById('dmodal').classList.remove('open'); }
+document.getElementById('modal').addEventListener('click', e => { if(e.target===document.getElementById('modal')) closeModal(); });
+document.getElementById('dmodal').addEventListener('click', e => { if(e.target===document.getElementById('dmodal')) closeDemo(); });
+
+function submitModal(){
+  const name = document.getElementById('m-name').value.trim();
+  const email = document.getElementById('m-email').value.trim();
+  if(!name || !email){ document.getElementById('m-name').style.borderColor='#555'; return; }
+  closeModal();
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+  ['m-name','m-email','m-biz','m-service'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
+}
+
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); closeDemo(); } });
+
+// GEMINI WIDGET
+const geminiInput = document.getElementById('gemini-input');
+const geminiSubmit = document.getElementById('gemini-submit');
+const geminiResponse = document.getElementById('gemini-response');
+const geminiLoading = document.getElementById('gemini-loading');
+const responseText = document.getElementById('response-text');
+
+// Replace this URL with your Make.com webhook URL
+const MAKE_COM_WEBHOOK = 'https://hook.eu1.make.com/jvld0n2ec6k3zuehhsc8rgax8btc7qxj';
+
+async function submitGemini(){
+  const message = geminiInput.value.trim();
+  if(!message){
+    geminiInput.style.borderColor='#555';
+    setTimeout(() => geminiInput.style.borderColor='', 500);
+    return;
+  }
+  
+  geminiSubmit.disabled = true;
+  geminiSubmit.textContent = 'Sending...';
+  geminiResponse.style.display = 'none';
+  geminiLoading.style.display = 'block';
+  
+  try {
+    const response = await fetch(MAKE_COM_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ 
+        message: message,
+        timestamp: new Date().toISOString()
+      })
+    });
+    
+    const data = await response.json();
+    
+    if(data.response || data.result){
+      responseText.textContent = data.response || data.result;
+      geminiResponse.style.display = 'block';
+      geminiInput.value = '';
+    } else {
+      responseText.textContent = 'No response from Gemini. Check your Make.com webhook configuration.';
+      geminiResponse.style.display = 'block';
+    }
+  } catch(err){
+    responseText.textContent = 'Error: Unable to connect to Make.com. Make sure your webhook URL is configured correctly.';
+    geminiResponse.style.display = 'block';
+    console.error('Gemini widget error:', err);
+  } finally {
+    geminiLoading.style.display = 'none';
+    geminiSubmit.disabled = false;
+    geminiSubmit.textContent = 'Send to Gemini';
+  }
+}
+
+geminiInput.addEventListener('keydown', e => {
+  if(e.key === 'Enter' && e.ctrlKey){
+    submitGemini();
+  }
+});
+</script>
+</body>
+</html>
