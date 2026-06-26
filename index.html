@@ -457,6 +457,8 @@ geminiInput.addEventListener('keydown', e => {
   if(e.key === 'Enter' && !e.shiftKey){ e.preventDefault(); submitGemini(); }
 });
 
+geminiSubmit.addEventListener('click', submitGemini);
+
 function scrollChat(){ chatMessages.scrollTop = chatMessages.scrollHeight; }
 
 function addMsg(role, text){
