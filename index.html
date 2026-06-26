@@ -428,7 +428,7 @@ const geminiResponse = document.getElementById('gemini-response');
 const geminiLoading = document.getElementById('gemini-loading');
 const responseText = document.getElementById('response-text');
 
-// Replace this URL with your Make.com webhook URL
+// Make.com webhook URL
 const MAKE_COM_WEBHOOK = 'https://hook.eu1.make.com/jvld0n2ec6k3zuehhsc8rgax8btc7qxj';
 
 async function submitGemini(){
@@ -454,18 +454,20 @@ async function submitGemini(){
       })
     });
     
+    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    
     const data = await response.json();
     
-    if(data.response || data.result){
-      responseText.textContent = data.response || data.result;
+    // Check various possible response fields
+    const result = data.response || data.result || data.message || data.text || JSON.stringify(data);
+    
+    if(result){
+      responseText.textContent = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
       geminiResponse.style.display = 'block';
       geminiInput.value = '';
-    } else {
-      responseText.textContent = 'No response from Gemini. Check your Make.com webhook configuration.';
-      geminiResponse.style.display = 'block';
     }
   } catch(err){
-    responseText.textContent = 'Error: Unable to connect to Make.com. Make sure your webhook URL is configured correctly.';
+    responseText.textContent = `Error: ${err.message}. Check your Make.com scenario and ensure it's returning data.`;
     geminiResponse.style.display = 'block';
     console.error('Gemini widget error:', err);
   } finally {
@@ -476,7 +478,8 @@ async function submitGemini(){
 }
 
 geminiInput.addEventListener('keydown', e => {
-  if(e.key === 'Enter' && e.ctrlKey){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
     submitGemini();
   }
 });
