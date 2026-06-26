@@ -595,11 +595,14 @@ async function submitGemini(){
       replyText = data.response || data.result || data.answer || data.text || data.output || data.message || data.reply || data.body || data.content;
       
       // If the response itself is JSON string, parse it again
-      if(replyText && typeof replyText === 'string' && replyText.startsWith('{')) {
-        try {
-          const innerData = JSON.parse(replyText);
-          replyText = innerData.response || innerData.text || innerData.answer || replyText;
-        } catch(e) {}
+      if(replyText && typeof replyText === 'string') {
+        replyText = replyText.trim();
+        if(replyText.startsWith('{')) {
+          try {
+            const innerData = JSON.parse(replyText);
+            replyText = innerData.response || innerData.text || innerData.answer || replyText;
+          } catch(e) {}
+        }
       }
       
       // If still nothing, grab the first non-empty string value
@@ -613,7 +616,14 @@ async function submitGemini(){
         }
       }
     } else if(typeof raw === 'string' && raw.length > 8 && raw !== 'Accepted') {
-      replyText = raw;
+      // If raw response is a JSON string itself, try to parse it
+      replyText = raw.trim();
+      if(replyText.startsWith('{')) {
+        try {
+          const parsedRaw = JSON.parse(replyText);
+          replyText = parsedRaw.response || parsedRaw.text || replyText;
+        } catch(e) {}
+      }
     }
 
     console.log('Final replyText:', replyText);
