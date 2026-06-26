@@ -628,10 +628,10 @@ async function submitGemini(){
 
     console.log('Final replyText:', replyText);
 
-    // Fallback: if still no response, show debugging info
+    // Fallback: if still no response, show user-friendly error
     if(!replyText) {
       console.log('Full response object:', JSON.stringify(data, null, 2));
-      replyText = '✦ Make.com scenario received your message but didn\'t return a response. Check that your "Respond to Webhook" module includes the Gemini output in the body.';
+      replyText = 'Sorry, I\'m having trouble processing that right now. Please try again in a moment.';
     }
 
     if(typeof replyText !== 'string') replyText = JSON.stringify(replyText);
