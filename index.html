@@ -442,7 +442,7 @@ function submitModal(){
 document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); closeDemo(); } });
 
 // ── CHAT WIDGET ──────────────────────────────────────────────
-const WEBHOOK = 'https://hook.eu1.make.com/jvld0n2ec6k3zuehhsc8rgax8btc7qxj';
+const WEBHOOK = 'https://hook.eu1.make.com/npj80oodf95erfks1btufj47okgi7d4g';
 const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
 const geminiSubmit = document.getElementById('gemini-submit');
@@ -575,7 +575,7 @@ async function submitGemini(){
     // Flexible key extraction — handles whatever Make returns
     replyText =
       (data && (data.response || data.result || data.answer || data.text || data.output || data.message)) ||
-      (typeof raw === 'string' && raw.length ? raw : null) ||
+      (typeof raw === 'string' && raw.length && raw !== 'Accepted' ? raw : null) ||
       '(No response received — check your Make.com scenario output mapping)';
 
     if(typeof replyText !== 'string') replyText = JSON.stringify(replyText);
