@@ -442,7 +442,8 @@ async function submitGemini(){
   geminiSubmit.disabled = true;
   geminiSubmit.textContent = 'Sending...';
   geminiResponse.style.display = 'none';
-  geminiLoading.style.display = 'block';
+  
+  console.log('Sending to webhook:', { message, timestamp: new Date().toISOString() });
   
   try {
     const response = await fetch(MAKE_COM_WEBHOOK, {
@@ -454,24 +455,28 @@ async function submitGemini(){
       })
     });
     
-    if(!response.ok) throw new Error(`HTTP ${response.status}`);
+    console.log('Response status:', response.status);
+    const text = await response.text();
+    console.log('Response body:', text);
     
-    const data = await response.json();
-    
-    // Check various possible response fields
-    const result = data.response || data.result || data.message || data.text || JSON.stringify(data);
-    
-    if(result){
-      responseText.textContent = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
-      geminiResponse.style.display = 'block';
-      geminiInput.value = '';
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch {
+      data = { raw: text };
     }
-  } catch(err){
-    responseText.textContent = `Error: ${err.message}. Check your Make.com scenario and ensure it's returning data.`;
+    
+    const result = data.response || data.result || data.message || data.text || data.raw || text || 'Data received from Make.com';
+    
+    responseText.textContent = typeof result === 'string' ? result : JSON.stringify(result, null, 2);
     geminiResponse.style.display = 'block';
-    console.error('Gemini widget error:', err);
+    geminiInput.value = '';
+    
+  } catch(err){
+    console.error('Full error:', err);
+    responseText.textContent = `Error: ${err.message}. Check browser console for details.`;
+    geminiResponse.style.display = 'block';
   } finally {
-    geminiLoading.style.display = 'none';
     geminiSubmit.disabled = false;
     geminiSubmit.textContent = 'Send to Gemini';
   }
