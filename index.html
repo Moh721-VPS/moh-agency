@@ -579,8 +579,6 @@ async function submitGemini(){
     
     const raw = await res.text();
     console.log('Raw response:', raw);
-    console.log('Raw response type:', typeof raw);
-    console.log('Raw response length:', raw.length);
     
     let data;
     try { 
@@ -595,6 +593,14 @@ async function submitGemini(){
     if(data && typeof data === 'object') {
       // Try common response keys
       replyText = data.response || data.result || data.answer || data.text || data.output || data.message || data.reply || data.body || data.content;
+      
+      // If the response itself is JSON string, parse it again
+      if(replyText && typeof replyText === 'string' && replyText.startsWith('{')) {
+        try {
+          const innerData = JSON.parse(replyText);
+          replyText = innerData.response || innerData.text || innerData.answer || replyText;
+        } catch(e) {}
+      }
       
       // If still nothing, grab the first non-empty string value
       if(!replyText) {
