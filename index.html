@@ -682,7 +682,7 @@ function addMsg(role, text){
   } else {
     bubble.style.cssText += ';background:#fff;color:#0A0A0A;border-radius:10px 0 10px 10px;font-weight:500';
   }
-  bubble.textContent = text;
+  bubble.innerHTML = text;
 
   col.appendChild(label);
   col.appendChild(bubble);
@@ -728,10 +728,10 @@ function addTyping(){
 }
 
 function typeWriter(bubble, text, speed=18){
-  bubble.textContent = '';
+  bubble.innerHTML = '';
   let i = 0;
   const tick = setInterval(() => {
-    bubble.textContent += text[i++];
+    bubble.innerHTML += text[i++];
     scrollChat();
     if(i >= text.length) clearInterval(tick);
   }, speed);
