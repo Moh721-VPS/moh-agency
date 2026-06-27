@@ -638,6 +638,9 @@ const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
 const geminiSubmit = document.getElementById('gemini-submit');
 
+// CONVERSATION HISTORY - Maintains context across messages
+let chatContext = [];
+
 geminiInput.addEventListener('input', () => {
   geminiInput.style.height = 'auto';
   geminiInput.style.height = Math.min(geminiInput.scrollHeight, 120) + 'px';
@@ -785,6 +788,12 @@ async function submitGemini(){
   geminiSubmit.disabled = true;
   geminiSubmit.style.opacity = '.45';
 
+  // Add user message to conversation history
+  chatContext.push({
+    role: "user",
+    parts: [{ text: sanitizeInput(message) }]
+  });
+
   addMsg('user', message);
   const typing = addTyping();
 
@@ -795,7 +804,10 @@ async function submitGemini(){
     const res = await fetch(GEMINI_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: sanitizeInput(message), timestamp: new Date().toISOString() })
+      body: JSON.stringify({ 
+        history: chatContext, 
+        timestamp: new Date().toISOString() 
+      })
     });
 
     if(!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -851,6 +863,12 @@ async function submitGemini(){
   } catch(err){
     replyText = `❌ ${err.message} — Make sure your Make.com webhook is active.`;
   }
+
+  // Add AI response to conversation history
+  chatContext.push({
+    role: "model",
+    parts: [{ text: replyText }]
+  });
 
   typing.remove();
   const bubble = addMsg('ai', '');
