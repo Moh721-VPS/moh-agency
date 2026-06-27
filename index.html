@@ -3,6 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+<!-- Security Headers -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://hook.eu1.make.com https://api.anthropic.com; frame-ancestors 'none'">
+<meta http-equiv="X-Content-Type-Options" content="nosniff">
+<meta http-equiv="X-Frame-Options" content="DENY">
+<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Moh Agency — AI Automation</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%230A0A0A' width='32' height='32'/><line x1='6' y1='4' x2='6' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='4' x2='16' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/><line x1='26' y1='4' x2='26' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -133,10 +140,13 @@ footer{padding:32px 52px;border-top:1px solid var(--border);display:flex;align-i
 option{background:var(--bg3)}
 .msubmit{width:100%;padding:14px;background:var(--text);color:var(--bg);border:none;border-radius:8px;font-family:var(--f);font-size:14px;font-weight:600;cursor:none;margin-top:4px;transition:background .2s}
 .msubmit:hover{background:#ddd}
+.error-msg{color:#ff6b6b;font-size:12px;margin-top:-8px;margin-bottom:10px}
 
 /* TOAST */
 .toast{position:fixed;bottom:32px;left:50%;transform:translateX(-50%) translateY(80px);background:var(--bg2);border:1px solid var(--border2);border-radius:10px;padding:14px 24px;font-size:14px;color:var(--text);z-index:300;transition:transform .4s ease,opacity .4s;opacity:0}
 .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+.toast.error{border-color:#ff6b6b;color:#ff6b6b}
+.toast.success{border-color:#51cf66;color:#51cf66}
 
 /* REVEAL */
 .fu{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
@@ -318,7 +328,6 @@ option{background:var(--bg3)}
         <textarea id="gemini-input" rows="1" placeholder="Ask Moh AI anything..." spellcheck="false"
           style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:var(--f);font-size:13px;resize:none;outline:none;transition:border-color .2s;line-height:1.5;max-height:120px;overflow-y:auto;-webkit-appearance:none;appearance:none"></textarea>
         <button id="gemini-submit" style="width:38px;height:38px;background:var(--text);border:none;border-radius:9px;cursor:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;margin-bottom:1px"
-          style="width:38px;height:38px;background:var(--text);border:none;border-radius:9px;cursor:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;margin-bottom:1px"
           type="button">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
@@ -333,10 +342,10 @@ option{background:var(--bg3)}
 <section id="cta">
   <span class="ctag fu">Ready when you are</span>
   <h2 class="ch fu d1">Start automating today.</h2>
-  <p class="csub fu d2">Book a free 30-minute discovery call. No commitment.</p>
+  <p class="csub fu d2">Book a free 5-minute discovery call. No commitment.</p>
   <div class="cbtns fu d3">
     <button class="bw" onclick="openModal()">Book a Call</button>
-    <a href="mailto:mohammedgamer2020@gmail.com" style="padding:14px 28px;background:transparent;color:var(--text);border:1px solid var(--border2);border-radius:8px;font-family:var(--f);font-size:14px;font-weight:400;text-decoration:none;transition:background .2s,border-color .2s;display:inline-block;cursor:pointer" onmouseover="this.style.background='var(--bg2)';this.style.borderColor='#484848'" onmouseout="this.style.background='transparent';this.style.borderColor='var(--border2)'">Contact Us</a>
+    <button class="bg" onclick="openContactForm()" style="cursor:none">Contact Us</button>
   </div>
 </section>
 
@@ -371,6 +380,21 @@ option{background:var(--bg3)}
   </div>
 </div>
 
+<!-- CONTACT FORM MODAL -->
+<div class="modal-wrap" id="contact-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeContactForm()">×</button>
+    <h3 class="mtitle">Get in Touch</h3>
+    <p class="msub">Send us a message and we'll respond as soon as possible.</p>
+    <input class="mi" type="text" placeholder="Your name" id="c-name" maxlength="100">
+    <input class="mi" type="email" placeholder="Email address" id="c-email" maxlength="255">
+    <input class="mi" type="text" placeholder="Subject" id="c-subject" maxlength="150">
+    <textarea class="mi" placeholder="Your message" id="c-message" rows="4" maxlength="2000" style="resize:vertical;font-family:var(--f)"></textarea>
+    <div id="c-error" class="error-msg" style="display:none;"></div>
+    <button class="msubmit" id="c-submit" onclick="submitContactForm()">Send Message</button>
+  </div>
+</div>
+
 <!-- DEMO MODAL -->
 <div class="modal-wrap" id="dmodal">
   <div class="mbox" style="max-width:520px">
@@ -393,6 +417,42 @@ option{background:var(--bg3)}
 <div class="toast" id="toast">Request sent — we will be in touch within 24 hours.</div>
 
 <script>
+// ══════════════════════════════════════════════════════════════
+// SECURITY & UTILITY FUNCTIONS
+// ══════════════════════════════════════════════════════════════
+
+// Input sanitization function
+function sanitizeInput(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+// Email validation
+function isValidEmail(email) {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(String(email).toLowerCase()) && email.length <= 255;
+}
+
+// Rate limiting (prevent spam)
+const submitAttempts = {};
+function canSubmit(key) {
+  const now = Date.now();
+  if (!submitAttempts[key]) {
+    submitAttempts[key] = now;
+    return true;
+  }
+  if (now - submitAttempts[key] > 3000) { // 3 second cooldown
+    submitAttempts[key] = now;
+    return true;
+  }
+  return false;
+}
+
+// ══════════════════════════════════════════════════════════════
+// UI LOGIC
+// ══════════════════════════════════════════════════════════════
+
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => nav.classList.toggle('s', scrollY > 60));
 
@@ -424,31 +484,160 @@ document.querySelectorAll('button,a,.sc,.step').forEach(el => {
 
 function openModal(){ document.getElementById('modal').classList.add('open'); }
 function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+function openContactForm(){ document.getElementById('contact-modal').classList.add('open'); }
+function closeContactForm(){ document.getElementById('contact-modal').classList.remove('open'); }
 function openDemo(){ document.getElementById('dmodal').classList.add('open'); }
 function closeDemo(){ document.getElementById('dmodal').classList.remove('open'); }
+
 document.getElementById('modal').addEventListener('click', e => { if(e.target===document.getElementById('modal')) closeModal(); });
+document.getElementById('contact-modal').addEventListener('click', e => { if(e.target===document.getElementById('contact-modal')) closeContactForm(); });
 document.getElementById('dmodal').addEventListener('click', e => { if(e.target===document.getElementById('dmodal')) closeDemo(); });
 
+// ══════════════════════════════════════════════════════════════
+// BOOKING FORM SUBMIT
+// ══════════════════════════════════════════════════════════════
+
 function submitModal(){
+  if(!canSubmit('booking')) {
+    showToast('Please wait before submitting again', 'error');
+    return;
+  }
+
   const name = document.getElementById('m-name').value.trim();
   const email = document.getElementById('m-email').value.trim();
-  if(!name || !email){ document.getElementById('m-name').style.borderColor='#555'; return; }
+  
+  if(!name || name.length < 2) {
+    document.getElementById('m-name').style.borderColor='#ff6b6b';
+    setTimeout(() => { document.getElementById('m-name').style.borderColor=''; }, 2000);
+    return;
+  }
+  
+  if(!isValidEmail(email)) {
+    document.getElementById('m-email').style.borderColor='#ff6b6b';
+    setTimeout(() => { document.getElementById('m-email').style.borderColor=''; }, 2000);
+    return;
+  }
+
   closeModal();
-  const t = document.getElementById('toast');
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3500);
+  showToast('Request sent — we will be in touch within 24 hours.', 'success');
   ['m-name','m-email','m-biz','m-service'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
 }
 
-document.addEventListener('keydown', e => { if(e.key==='Escape'){ closeModal(); closeDemo(); } });
+// ══════════════════════════════════════════════════════════════
+// CONTACT FORM SUBMIT (Make.com Webhook)
+// ══════════════════════════════════════════════════════════════
 
-// ── CHAT WIDGET ──────────────────────────────────────────────
-const WEBHOOK = 'https://hook.eu1.make.com/npj80oodf95erfks1btufj47okgi7d4g';
+const CONTACT_WEBHOOK = 'https://hook.eu1.make.com/npj80oodf95erfks1btufj47okgi7d4g'; // Your Make.com webhook
+
+async function submitContactForm() {
+  if(!canSubmit('contact')) {
+    showError('Please wait before submitting again');
+    return;
+  }
+
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const subject = document.getElementById('c-subject').value.trim();
+  const message = document.getElementById('c-message').value.trim();
+  const errorDiv = document.getElementById('c-error');
+
+  // Validation
+  if(!name || name.length < 2) {
+    showError('Name must be at least 2 characters');
+    return;
+  }
+  if(!isValidEmail(email)) {
+    showError('Please enter a valid email address');
+    return;
+  }
+  if(!subject || subject.length < 3) {
+    showError('Subject must be at least 3 characters');
+    return;
+  }
+  if(!message || message.length < 10) {
+    showError('Message must be at least 10 characters');
+    return;
+  }
+
+  // Disable submit button
+  const submitBtn = document.getElementById('c-submit');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  submitBtn.style.opacity = '0.6';
+  errorDiv.style.display = 'none';
+
+  try {
+    const response = await fetch(CONTACT_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        name: sanitizeInput(name),
+        email: sanitizeInput(email),
+        subject: sanitizeInput(subject),
+        message: sanitizeInput(message),
+        timestamp: new Date().toISOString(),
+        source: 'website_contact_form'
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error(`Server error: ${response.status}`);
+    }
+
+    closeContactForm();
+    showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
+    
+    // Reset form
+    document.getElementById('c-name').value = '';
+    document.getElementById('c-email').value = '';
+    document.getElementById('c-subject').value = '';
+    document.getElementById('c-message').value = '';
+
+  } catch (error) {
+    console.error('Contact form error:', error);
+    showError('Failed to send message. Please try again.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    submitBtn.style.opacity = '1';
+  }
+}
+
+function showError(msg) {
+  const errorDiv = document.getElementById('c-error');
+  errorDiv.textContent = msg;
+  errorDiv.style.display = 'block';
+}
+
+// ══════════════════════════════════════════════════════════════
+// TOAST NOTIFICATIONS
+// ══════════════════════════════════════════════════════════════
+
+function showToast(msg, type = 'info') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast show ' + type;
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+document.addEventListener('keydown', e => { 
+  if(e.key==='Escape'){ 
+    closeModal(); 
+    closeContactForm(); 
+    closeDemo(); 
+  } 
+});
+
+// ══════════════════════════════════════════════════════════════
+// CHAT WIDGET
+// ══════════════════════════════════════════════════════════════
+
+const GEMINI_WEBHOOK = 'https://hook.eu1.make.com/npj80oodf95erfks1btufj47okgi7d4g';
 const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
 const geminiSubmit = document.getElementById('gemini-submit');
 
-// Auto-grow textarea
 geminiInput.addEventListener('input', () => {
   geminiInput.style.height = 'auto';
   geminiInput.style.height = Math.min(geminiInput.scrollHeight, 120) + 'px';
@@ -467,7 +656,6 @@ function addMsg(role, text){
   const wrap = document.createElement('div');
   wrap.style.cssText = `display:flex;gap:12px;align-items:flex-start${isAI ? '' : ';flex-direction:row-reverse'}`;
 
-  // Avatar
   const av = document.createElement('div');
   av.style.cssText = 'width:30px;height:30px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:20px';
   if(isAI){
@@ -536,7 +724,6 @@ function addTyping(){
   return wrap;
 }
 
-// Typewriter effect for AI response
 function typeWriter(bubble, text, speed=18){
   bubble.textContent = '';
   let i = 0;
@@ -547,104 +734,134 @@ function typeWriter(bubble, text, speed=18){
   }, speed);
 }
 
+function addBookingButton(){
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:12px;align-items:flex-start;margin-top:12px';
+
+  const av = document.createElement('div');
+  av.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:20px';
+  av.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+
+  const col = document.createElement('div');
+  const label = document.createElement('div');
+  label.style.cssText = 'font-size:11px;color:var(--dim);margin-bottom:6px;font-weight:500;letter-spacing:.04em';
+  label.textContent = 'MOH AI';
+
+  const btnContainer = document.createElement('div');
+  btnContainer.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
+  
+  const bookBtn = document.createElement('button');
+  bookBtn.textContent = 'Book Now';
+  bookBtn.style.cssText = 'background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;hover';
+  bookBtn.onmouseover = () => bookBtn.style.background = '#ddd';
+  bookBtn.onmouseout = () => bookBtn.style.background = 'var(--text)';
+  bookBtn.onclick = () => {
+    closeChat();
+    openContactForm();
+  };
+
+  btnContainer.appendChild(bookBtn);
+  col.appendChild(label);
+  col.appendChild(btnContainer);
+  wrap.appendChild(av);
+  wrap.appendChild(col);
+  chatMessages.appendChild(wrap);
+  scrollChat();
+}
+
+function closeChat(){
+  const chatWidget = document.getElementById('gemini-widget');
+  if(chatWidget) {
+    chatWidget.style.display = 'none';
+  }
+}
+
 async function submitGemini(){
   const message = geminiInput.value.trim();
-  if(!message) return;
+  if(!message || message.length > 2000) return;
 
-  // Disable input
   geminiInput.value = '';
   geminiInput.style.height = 'auto';
   geminiSubmit.disabled = true;
   geminiSubmit.style.opacity = '.45';
 
-  // Show user message
   addMsg('user', message);
-
-  // Show typing indicator
   const typing = addTyping();
 
   let replyText = '';
+  let shouldShowBookButton = false;
+
   try {
-    const res = await fetch(WEBHOOK, {
+    const res = await fetch(GEMINI_WEBHOOK, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message, timestamp: new Date().toISOString() })
+      body: JSON.stringify({ message: sanitizeInput(message), timestamp: new Date().toISOString() })
     });
 
-    console.log('Response status:', res.status, res.statusText);
-    
-    if(!res.ok) {
-      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
-    }
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
     
     const raw = await res.text();
-    console.log('Raw response:', raw);
-    
     let data;
     try { 
       data = JSON.parse(raw);
-      console.log('Parsed JSON:', data);
     } catch(e) { 
-      console.log('JSON parse failed:', e);
       data = null; 
     }
 
-    // Flexible key extraction - try all possible response keys
     if(data && typeof data === 'object') {
-      // Try common response keys
       replyText = data.response || data.result || data.answer || data.text || data.output || data.message || data.reply || data.body || data.content;
+      shouldShowBookButton = data.showBookButton || false;
       
-      // If the response itself is JSON string, parse it again
       if(replyText && typeof replyText === 'string') {
         replyText = replyText.trim();
         if(replyText.startsWith('{')) {
           try {
             const innerData = JSON.parse(replyText);
             replyText = innerData.response || innerData.text || innerData.answer || replyText;
+            shouldShowBookButton = innerData.showBookButton || false;
           } catch(e) {}
         }
       }
       
-      // If still nothing, grab the first non-empty string value
       if(!replyText) {
         for(let key in data) {
           if(typeof data[key] === 'string' && data[key].length > 0 && data[key] !== 'Accepted') {
             replyText = data[key];
-            console.log('Found response in key:', key);
             break;
           }
         }
       }
     } else if(typeof raw === 'string' && raw.length > 8 && raw !== 'Accepted') {
-      // If raw response is a JSON string itself, try to parse it
       replyText = raw.trim();
       if(replyText.startsWith('{')) {
         try {
           const parsedRaw = JSON.parse(replyText);
           replyText = parsedRaw.response || parsedRaw.text || replyText;
+          shouldShowBookButton = parsedRaw.showBookButton || false;
         } catch(e) {}
       }
     }
 
-    console.log('Final replyText:', replyText);
-
-    // Fallback: if still no response, show user-friendly error
     if(!replyText) {
-      console.log('Full response object:', JSON.stringify(data, null, 2));
       replyText = 'Sorry, I\'m having trouble processing that right now. Please try again in a moment.';
     }
 
     if(typeof replyText !== 'string') replyText = JSON.stringify(replyText);
 
   } catch(err){
-    console.error('Chat error:', err);
-    replyText = `❌ ${err.message} — Make sure your Make.com webhook is active and has CORS headers set.`;
+    replyText = `❌ ${err.message} — Make sure your Make.com webhook is active.`;
   }
 
-  // Remove typing indicator, show reply with typewriter
   typing.remove();
   const bubble = addMsg('ai', '');
   typeWriter(bubble, replyText);
+
+  // Show booking button if bot indicates lead is ready
+  if(shouldShowBookButton) {
+    setTimeout(() => {
+      addBookingButton();
+    }, replyText.length * 18 + 500);
+  }
 
   geminiSubmit.disabled = false;
   geminiSubmit.style.opacity = '1';
