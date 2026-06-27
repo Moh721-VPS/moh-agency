@@ -821,6 +821,7 @@ async function submitGemini(){
     }
 
     if(data && typeof data === 'object') {
+      // Extract response text from JSON object
       replyText = data.response || data.result || data.answer || data.text || data.output || data.message || data.reply || data.body || data.content;
       shouldShowBookButton = data.showBookButton || false;
       
@@ -862,6 +863,7 @@ async function submitGemini(){
 
   } catch(err){
     replyText = `❌ ${err.message} — Make sure your Make.com webhook is active.`;
+    shouldShowBookButton = false;
   }
 
   // Add AI response to conversation history
