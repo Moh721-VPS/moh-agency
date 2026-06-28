@@ -31,13 +31,14 @@ export default async function handler(req, res) {
 
   try {
     console.log('Calling Make.com webhook:', webhookUrl.substring(0, 50) + '...');
+    console.log('Sending history array with', history.length, 'messages');
     
+    // Send payload matching your Make.com HTTP module format
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        history: history,
-        timestamp: new Date().toISOString()
+        history: history
       }),
       timeout: 30000
     });
@@ -46,6 +47,8 @@ export default async function handler(req, res) {
 
     if (!response.ok) {
       console.error(`Make.com returned ${response.status}: ${response.statusText}`);
+      const errorText = await response.text();
+      console.error('Error body:', errorText);
       return res.status(500).json({ 
         error: `Make.com error: ${response.status}`,
         response: 'Sorry, I\'m having trouble right now. Please try again.' 
@@ -53,13 +56,14 @@ export default async function handler(req, res) {
     }
 
     const text = await response.text();
-    console.log('Make.com raw response:', text.substring(0, 200));
+    console.log('Make.com raw response:', text.substring(0, 500));
 
     let result;
     try {
       result = JSON.parse(text);
     } catch (parseError) {
       console.error('Failed to parse Make.com JSON:', parseError.message);
+      console.error('Raw text was:', text);
       return res.status(500).json({ 
         error: 'Invalid JSON from Make.com',
         response: 'Make.com returned an invalid response. Please check your scenario.' 
