@@ -4,11 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<!-- Security Headers -->
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://hook.eu1.make.com https://api.anthropic.com; frame-ancestors 'none'">
-<meta http-equiv="X-Content-Type-Options" content="nosniff">
-<meta http-equiv="X-Frame-Options" content="DENY">
-<meta http-equiv="X-XSS-Protection" content="1; mode=block">
+<!-- Security Headers removed — now enforced via vercel.json -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Moh Agency — AI Automation</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%230A0A0A' width='32' height='32'/><line x1='6' y1='4' x2='6' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='4' x2='16' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/><line x1='26' y1='4' x2='26' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/></svg>">
@@ -434,21 +430,6 @@ function isValidEmail(email) {
   return re.test(String(email).toLowerCase()) && email.length <= 255;
 }
 
-// Rate limiting (prevent spam)
-const submitAttempts = {};
-function canSubmit(key) {
-  const now = Date.now();
-  if (!submitAttempts[key]) {
-    submitAttempts[key] = now;
-    return true;
-  }
-  if (now - submitAttempts[key] > 3000) { // 3 second cooldown
-    submitAttempts[key] = now;
-    return true;
-  }
-  return false;
-}
-
 // ══════════════════════════════════════════════════════════════
 // UI LOGIC
 // ══════════════════════════════════════════════════════════════
@@ -498,11 +479,6 @@ document.getElementById('dmodal').addEventListener('click', e => { if(e.target==
 // ══════════════════════════════════════════════════════════════
 
 function submitModal(){
-  if(!canSubmit('booking')) {
-    showToast('Please wait before submitting again', 'error');
-    return;
-  }
-
   const name = document.getElementById('m-name').value.trim();
   const email = document.getElementById('m-email').value.trim();
   
@@ -524,17 +500,10 @@ function submitModal(){
 }
 
 // ══════════════════════════════════════════════════════════════
-// CONTACT FORM SUBMIT (Make.com Webhook)
+// CONTACT FORM SUBMIT (Server-side API)
 // ══════════════════════════════════════════════════════════════
 
-const CONTACT_WEBHOOK = 'https://hook.eu1.make.com/npj80oodf95erfks1btufj47okgi7d4g'; // Your Make.com webhook
-
 async function submitContactForm() {
-  if(!canSubmit('contact')) {
-    showError('Please wait before submitting again');
-    return;
-  }
-
   const name = document.getElementById('c-name').value.trim();
   const email = document.getElementById('c-email').value.trim();
   const subject = document.getElementById('c-subject').value.trim();
@@ -568,7 +537,7 @@ async function submitContactForm() {
   errorDiv.style.display = 'none';
 
   try {
-    const response = await fetch(CONTACT_WEBHOOK, {
+    const response = await fetch('/api/contact', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -576,13 +545,13 @@ async function submitContactForm() {
         email: sanitizeInput(email),
         subject: sanitizeInput(subject),
         message: sanitizeInput(message),
-        timestamp: new Date().toISOString(),
-        source: 'website_contact_form'
+        timestamp: new Date().toISOString()
       })
     });
 
     if (!response.ok) {
-      throw new Error(`Server error: ${response.status}`);
+      const data = await response.json();
+      throw new Error(data.error || `Server error: ${response.status}`);
     }
 
     closeContactForm();
@@ -596,7 +565,7 @@ async function submitContactForm() {
 
   } catch (error) {
     console.error('Contact form error:', error);
-    showError('Failed to send message. Please try again.');
+    showError(error.message || 'Failed to send message. Please try again.');
   } finally {
     submitBtn.disabled = false;
     submitBtn.textContent = originalText;
@@ -630,15 +599,13 @@ document.addEventListener('keydown', e => {
 });
 
 // ══════════════════════════════════════════════════════════════
-// CHAT WIDGET
+// CHAT WIDGET — SECURE XSS-PROOF RENDERING
 // ══════════════════════════════════════════════════════════════
 
-const GEMINI_WEBHOOK = 'https://hook.eu1.make.com/npj80oodf95erfks1btufj47okgi7d4g';
 const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
 const geminiSubmit = document.getElementById('gemini-submit');
 
-// CONVERSATION HISTORY - Maintains context across messages
 let chatContext = [];
 
 geminiInput.addEventListener('input', () => {
@@ -682,7 +649,9 @@ function addMsg(role, text){
   } else {
     bubble.style.cssText += ';background:#fff;color:#0A0A0A;border-radius:10px 0 10px 10px;font-weight:500';
   }
-  bubble.innerHTML = text;
+  
+  // SECURITY FIX: Use textContent instead of innerHTML to prevent XSS
+  bubble.textContent = text;
 
   col.appendChild(label);
   col.appendChild(bubble);
@@ -728,10 +697,10 @@ function addTyping(){
 }
 
 function typeWriter(bubble, text, speed=18){
-  bubble.innerHTML = '';
+  bubble.textContent = '';
   let i = 0;
   const tick = setInterval(() => {
-    bubble.innerHTML += text[i++];
+    bubble.textContent += text[i++];
     scrollChat();
     if(i >= text.length) clearInterval(tick);
   }, speed);
@@ -788,7 +757,6 @@ async function submitGemini(){
   geminiSubmit.disabled = true;
   geminiSubmit.style.opacity = '.45';
 
-  // Add user message to conversation history
   chatContext.push({
     role: "user",
     parts: [{ text: sanitizeInput(message) }]
@@ -801,7 +769,7 @@ async function submitGemini(){
   let shouldShowBookButton = false;
 
   try {
-    const res = await fetch(GEMINI_WEBHOOK, {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
@@ -810,51 +778,17 @@ async function submitGemini(){
       })
     });
 
-    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    if(!res.ok) {
+      const errData = await res.json();
+      throw new Error(errData.error || `HTTP ${res.status}`);
+    }
     
-    const raw = await res.text();
-    let data;
-    try { 
-      data = JSON.parse(raw);
-    } catch(e) { 
-      data = null; 
-    }
+    const data = await res.json();
 
-    if(data && typeof data === 'object') {
-      // Extract response text from JSON object
-      replyText = data.response || data.result || data.answer || data.text || data.output || data.message || data.reply || data.body || data.content;
-      shouldShowBookButton = data.showBookButton || false;
-      
-      if(replyText && typeof replyText === 'string') {
-        replyText = replyText.trim();
-        if(replyText.startsWith('{')) {
-          try {
-            const innerData = JSON.parse(replyText);
-            replyText = innerData.response || innerData.text || innerData.answer || replyText;
-            shouldShowBookButton = innerData.showBookButton || false;
-          } catch(e) {}
-        }
-      }
-      
-      if(!replyText) {
-        for(let key in data) {
-          if(typeof data[key] === 'string' && data[key].length > 0 && data[key] !== 'Accepted') {
-            replyText = data[key];
-            break;
-          }
-        }
-      }
-    } else if(typeof raw === 'string' && raw.length > 8 && raw !== 'Accepted') {
-      replyText = raw.trim();
-      if(replyText.startsWith('{')) {
-        try {
-          const parsedRaw = JSON.parse(replyText);
-          replyText = parsedRaw.response || parsedRaw.text || replyText;
-          shouldShowBookButton = parsedRaw.showBookButton || false;
-        } catch(e) {}
-      }
-    }
-
+    // Extract response from API
+    replyText = data.response || data.text || data.answer || '';
+    shouldShowBookButton = data.showBookButton || false;
+    
     if(!replyText) {
       replyText = 'Sorry, I\'m having trouble processing that right now. Please try again in a moment.';
     }
@@ -862,11 +796,10 @@ async function submitGemini(){
     if(typeof replyText !== 'string') replyText = JSON.stringify(replyText);
 
   } catch(err){
-    replyText = `❌ ${err.message} — Make sure your Make.com webhook is active.`;
+    replyText = `❌ ${err.message}`;
     shouldShowBookButton = false;
   }
 
-  // Add AI response to conversation history
   chatContext.push({
     role: "model",
     parts: [{ text: replyText }]
@@ -876,7 +809,6 @@ async function submitGemini(){
   const bubble = addMsg('ai', '');
   typeWriter(bubble, replyText);
 
-  // Show booking button if bot indicates lead is ready
   if(shouldShowBookButton) {
     setTimeout(() => {
       addBookingButton();
