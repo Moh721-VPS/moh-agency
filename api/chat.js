@@ -1,5 +1,5 @@
 // ============================================================================
-// api/chat.js - COPY THIS ENTIRE FILE
+// SHARED CONFIGURATION & UTILITIES
 // ============================================================================
 
 const ALLOWED_ORIGINS = [
@@ -56,6 +56,10 @@ function setCORSHeaders(req, res) {
   res.setHeader('Access-Control-Allow-Methods', 'GET,OPTIONS,PATCH,DELETE,POST,PUT');
   res.setHeader('Access-Control-Allow-Headers', 'X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version');
 }
+
+// ============================================================================
+// MAIN HANDLER
+// ============================================================================
 
 export default async function handler(req, res) {
   setCORSHeaders(req, res);
@@ -173,13 +177,22 @@ export default async function handler(req, res) {
       });
     }
 
+    // Check if Gemini/Make.com returned an error
+    if (result.error) {
+      console.error('Upstream service error:', result.error);
+      return res.status(502).json({
+        error: 'Upstream service unavailable',
+        response: 'I\'m currently unavailable. Please try again in a few moments.'
+      });
+    }
+
     const responseText = result.response || result.text || result.answer || '';
 
     if (typeof responseText !== 'string' || responseText.trim().length === 0) {
       console.error('Make.com returned empty or invalid response text', result);
       return res.status(502).json({
         error: 'Empty response from upstream service',
-        response: 'I\'m having trouble responding right now. Please try again in a moment.'
+        response: 'I\'m currently unavailable. Please try again in a few moments.'
       });
     }
 
