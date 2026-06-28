@@ -13,52 +13,71 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: 'Method not allowed' });
   }
 
-  const { name, email, subject, message, timestamp } = req.body;
+  const { history } = req.body;
 
-  if (!name || !email || !subject || !message) {
-    return res.status(400).json({ error: 'Missing required fields' });
+  if (!Array.isArray(history)) {
+    return res.status(400).json({ error: 'Invalid request format', response: 'Please send a valid message' });
   }
 
-  const webhookUrl = process.env.MAKE_CONTACT_WEBHOOK;
+  const webhookUrl = process.env.MAKE_CHAT_WEBHOOK;
 
   if (!webhookUrl) {
-    console.error('MAKE_CONTACT_WEBHOOK not configured');
-    return res.status(500).json({ error: 'Webhook not configured' });
+    console.error('MAKE_CHAT_WEBHOOK not configured');
+    return res.status(500).json({ 
+      error: 'Webhook not configured in Vercel', 
+      response: 'Chat service is temporarily unavailable. Please try again later.' 
+    });
   }
 
   try {
-    console.log('Calling Make.com contact webhook');
-
+    console.log('Calling Make.com webhook:', webhookUrl.substring(0, 50) + '...');
+    
     const response = await fetch(webhookUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ 
-        name,
-        email,
-        subject,
-        message,
-        timestamp: timestamp || new Date().toISOString()
+        history: history,
+        timestamp: new Date().toISOString()
       }),
       timeout: 30000
     });
 
+    console.log('Make.com response status:', response.status);
+
     if (!response.ok) {
-      console.error(`Make.com returned ${response.status}`);
-      return res.status(500).json({ error: 'Webhook failed' });
+      console.error(`Make.com returned ${response.status}: ${response.statusText}`);
+      return res.status(500).json({ 
+        error: `Make.com error: ${response.status}`,
+        response: 'Sorry, I\'m having trouble right now. Please try again.' 
+      });
     }
 
     const text = await response.text();
+    console.log('Make.com raw response:', text.substring(0, 200));
+
     let result;
     try {
       result = JSON.parse(text);
-    } catch (e) {
-      result = { success: true };
+    } catch (parseError) {
+      console.error('Failed to parse Make.com JSON:', parseError.message);
+      return res.status(500).json({ 
+        error: 'Invalid JSON from Make.com',
+        response: 'Make.com returned an invalid response. Please check your scenario.' 
+      });
     }
 
-    return res.status(200).json({ success: true, ...result });
+    const responseText = result.response || result.text || result.answer || 'No response from AI';
+    
+    return res.status(200).json({
+      response: responseText,
+      showBookButton: result.showBookButton || false
+    });
 
   } catch (error) {
-    console.error('Contact webhook error:', error);
-    return res.status(500).json({ error: 'Internal server error' });
+    console.error('Chat webhook error:', error.message);
+    return res.status(500).json({ 
+      error: error.message,
+      response: 'Network error. Please check your connection and try again.' 
+    });
   }
 }
