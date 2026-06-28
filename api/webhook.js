@@ -20,10 +20,21 @@ export default async function handler(req, res) {
     });
 
     if (!response.ok) {
-      return res.status(500).json({ error: 'Webhook failed' });
+      return res.status(500).json({ error: 'Webhook failed', status: response.status });
     }
 
-    const result = await response.json();
+    const text = await response.text();
+    
+    let result;
+    try {
+      result = JSON.parse(text);
+    } catch (parseError) {
+      console.error('Invalid JSON from Make.com:', text.substring(0, 200));
+      return res.status(500).json({ 
+        error: 'Make.com returned invalid response'
+      });
+    }
+
     return res.status(200).json(result);
   } catch (error) {
     console.error('Webhook error:', error);
