@@ -163,39 +163,57 @@ export default async function handler(req, res) {
     }
 
     const text = await response.text();
-    console.log('Make.com response received (first 300 chars):', text.substring(0, 300));
+    console.log('=== RAW MAKE.COM RESPONSE START ===');
+    console.log('Status:', response.status);
+    console.log('Headers:', Object.fromEntries(response.headers.entries()));
+    console.log('Body:', text);
+    console.log('=== RAW MAKE.COM RESPONSE END ===');
 
+    // Try to parse as JSON
     let result;
     try {
       result = JSON.parse(text);
+      console.log('Successfully parsed as JSON:', result);
     } catch (parseError) {
-      console.error('Failed to parse Make.com JSON response:', parseError.message);
-      console.error('Raw response:', text);
+      console.error('JSON parse failed:', parseError.message);
+      console.error('Attempted to parse:', text.substring(0, 500));
+      
+      // Make.com might have returned plain text or error
       return res.status(502).json({
-        error: 'Invalid response from upstream service',
-        response: 'I\'m currently unavailable. Please try again in a few moments.'
+        error: 'Invalid JSON response from upstream',
+        response: 'I\'m currently unavailable. Please try again in a few moments.',
+        debugInfo: `Could not parse response as JSON. Raw: ${text.substring(0, 200)}`
       });
     }
 
-    // Check if Gemini/Make.com returned an error
+    // Check if response itself contains an error object (from Gemini API)
     if (result.error) {
-      console.error('Upstream service error:', result.error);
+      console.error('Gemini/Make.com returned error object:', result.error);
       return res.status(502).json({
-        error: 'Upstream service unavailable',
-        response: 'I\'m currently unavailable. Please try again in a few moments.'
+        error: 'Upstream service error',
+        response: 'I\'m currently unavailable. Please try again in a few moments.',
+        upstreamError: result.error
       });
     }
 
-    const responseText = result.response || result.text || result.answer || '';
+    // Extract response text (try multiple field names)
+    const responseText = result.response || result.text || result.answer || result.content || '';
+    
+    console.log('Extracted response text:', responseText.substring(0, 200));
+    console.log('showBookButton value:', result.showBookButton);
 
+    // Validate response is not empty
     if (typeof responseText !== 'string' || responseText.trim().length === 0) {
-      console.error('Make.com returned empty or invalid response text', result);
+      console.error('Response text is empty or invalid', { result, type: typeof responseText });
       return res.status(502).json({
-        error: 'Empty response from upstream service',
-        response: 'I\'m currently unavailable. Please try again in a few moments.'
+        error: 'Empty response from upstream',
+        response: 'I\'m currently unavailable. Please try again in a few moments.',
+        debugInfo: `Response object: ${JSON.stringify(result)}`
       });
     }
 
+    // Success response
+    console.log('Chat request successful, returning to frontend');
     return res.status(200).json({
       response: responseText,
       showBookButton: result.showBookButton === true
