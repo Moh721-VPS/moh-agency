@@ -4,7 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta http-equiv="X-UA-Compatible" content="ie=edge">
-<!-- Security Headers removed — now enforced via vercel.json -->
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <title>Moh Agency — AI Automation</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect fill='%230A0A0A' width='32' height='32'/><line x1='6' y1='4' x2='6' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/><line x1='16' y1='4' x2='16' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/><line x1='26' y1='4' x2='26' y2='28' stroke='%23FFFFFF' stroke-width='2.5' stroke-linecap='round'/></svg>">
@@ -176,7 +175,7 @@ option{background:var(--bg3)}
     <li><a href="#process">Process</a></li>
     <li><a href="#cta">About</a></li>
   </ul>
-  <button class="nbtn" onclick="openModal()">Get Started</button>
+  <button class="nbtn" onclick="openBooking()">Get Started</button>
 </nav>
 
 <!-- HERO -->
@@ -186,10 +185,9 @@ option{background:var(--bg3)}
   <h1 class="fu on">Automate Your<br>Business <em>with AI</em></h1>
   <p class="hsub fu on d1">Custom AI integrations and Make.com automations for forward-thinking businesses. Save time, cut costs, scale smarter.</p>
   <div class="hbtns fu on d2">
-    <button class="bw" onclick="openModal()">Book a Call</button>
+    <button class="bw" onclick="openBooking()">Book a Call</button>
     <button class="bg" onclick="document.getElementById('services').scrollIntoView({behavior:'smooth'})">View Services</button>
   </div>
-
 </section>
 
 <!-- TICKER -->
@@ -204,7 +202,6 @@ option{background:var(--bg3)}
     <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/></svg>Make.com</div>
     <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>Notion</div>
     <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Airtable</div>
-    <!-- duplicate for seamless loop -->
     <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>Gemini</div>
     <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>Claude</div>
     <div class="pchip"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>Gmail</div>
@@ -285,7 +282,7 @@ option{background:var(--bg3)}
   </div>
   <div class="ds-right">
     <button class="bg" onclick="openDemo()">Watch Demo</button>
-    <button class="bw" onclick="openModal()">Book a Call</button>
+    <button class="bw" onclick="openBooking()">Book a Call</button>
   </div>
 </div>
 
@@ -297,12 +294,8 @@ option{background:var(--bg3)}
   </div>
 
   <div style="margin-top:44px;max-width:680px" class="fu d1">
-    <!-- Chat window -->
     <div id="chat-window" style="background:var(--bg2);border:1px solid var(--border2);border-radius:14px;overflow:hidden">
-
-      <!-- Messages area -->
       <div id="chat-messages" style="height:380px;overflow-y:auto;padding:28px 28px 12px;display:flex;flex-direction:column;gap:18px;scroll-behavior:smooth">
-        <!-- Welcome message -->
         <div class="msg-ai" style="display:flex;gap:12px;align-items:flex-start">
           <div style="width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
@@ -316,10 +309,8 @@ option{background:var(--bg3)}
         </div>
       </div>
 
-      <!-- Divider -->
       <div style="height:1px;background:var(--border)"></div>
 
-      <!-- Input row -->
       <div style="padding:16px 20px;display:flex;gap:10px;align-items:flex-end;background:var(--bg2)">
         <textarea id="gemini-input" rows="1" placeholder="Ask Moh AI anything..." spellcheck="false"
           style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:var(--f);font-size:13px;resize:none;outline:none;transition:border-color .2s;line-height:1.5;max-height:120px;overflow-y:auto;-webkit-appearance:none;appearance:none"></textarea>
@@ -328,7 +319,6 @@ option{background:var(--bg3)}
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#0A0A0A" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
-
     </div>
   <p style="font-size:11px;color:var(--dim);text-align:center;margin-top:12px">Moh AI · Powered by Make.com & Gemini · Built by Moh Agency</p>
   </div>
@@ -338,9 +328,9 @@ option{background:var(--bg3)}
 <section id="cta">
   <span class="ctag fu">Ready when you are</span>
   <h2 class="ch fu d1">Start automating today.</h2>
-  <p class="csub fu d2">Book a free 5-minute discovery call. No commitment.</p>
+  <p class="csub fu d2">Book a free discovery call. No commitment.</p>
   <div class="cbtns fu d3">
-    <button class="bw" onclick="openModal()">Book a Call</button>
+    <button class="bw" onclick="openBooking()">Book a Call</button>
     <button class="bg" onclick="openContactForm()" style="cursor:none">Contact Us</button>
   </div>
 </section>
@@ -356,26 +346,6 @@ option{background:var(--bg3)}
   </div>
 </footer>
 
-<!-- BOOKING MODAL -->
-<div class="modal-wrap" id="modal">
-  <div class="mbox">
-    <button class="mclose" onclick="closeModal()">×</button>
-    <h3 class="mtitle">Book a Discovery Call</h3>
-    <p class="msub">Tell us about your business and we will reach out within 24 hours.</p>
-    <input class="mi" type="text" placeholder="Your name" id="m-name">
-    <input class="mi" type="email" placeholder="Email address" id="m-email">
-    <input class="mi" type="text" placeholder="Business type (e.g. Real Estate, E-commerce)" id="m-biz">
-    <select class="mi" id="m-service">
-      <option value="">How can we help?</option>
-      <option>AI Integration</option>
-      <option>Make.com Automation</option>
-      <option>Custom Solution</option>
-      <option>Not sure yet</option>
-    </select>
-    <button class="msubmit" id="m-submit" onclick="submitModal()">Send Request</button>
-  </div>
-</div>
-
 <!-- CONTACT FORM MODAL -->
 <div class="modal-wrap" id="contact-modal">
   <div class="mbox">
@@ -388,6 +358,23 @@ option{background:var(--bg3)}
     <textarea class="mi" placeholder="Your message" id="c-message" rows="4" maxlength="2000" style="resize:vertical;font-family:var(--f)"></textarea>
     <div id="c-error" class="error-msg" style="display:none;"></div>
     <button class="msubmit" id="c-submit" onclick="submitContactForm()">Send Message</button>
+  </div>
+</div>
+
+<!-- BOOKING MODAL -->
+<div class="modal-wrap" id="booking-modal">
+  <div class="mbox">
+    <button class="mclose" onclick="closeBooking()">×</button>
+    <h3 class="mtitle">Book a Discovery Call</h3>
+    <p class="msub">Tell us about your business and we will reach out within 24 hours to schedule your call.</p>
+    <input class="mi" type="text" placeholder="First name" id="b-fname" maxlength="50">
+    <input class="mi" type="text" placeholder="Last name" id="b-lname" maxlength="50">
+    <input class="mi" type="email" placeholder="Email address" id="b-email" maxlength="255">
+    <input class="mi" type="tel" placeholder="Phone number" id="b-phone" maxlength="20">
+    <input class="mi" type="text" placeholder="Company name" id="b-company" maxlength="100">
+    <textarea class="mi" placeholder="Tell us about your needs" id="b-needs" rows="4" maxlength="2000" style="resize:vertical;font-family:var(--f)"></textarea>
+    <div id="b-error" class="error-msg" style="display:none;"></div>
+    <button class="msubmit" id="b-submit" onclick="submitBooking()">Request Call</button>
   </div>
 </div>
 
@@ -405,7 +392,7 @@ option{background:var(--bg3)}
         <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 4</span><span>Result posted back to Telegram group</span>
       </div>
     </div>
-    <button class="msubmit" style="margin-top:20px" onclick="closeDemo();openModal()">Get This Built for You</button>
+    <button class="msubmit" style="margin-top:20px" onclick="closeDemo();openBooking()">Get This Built for You</button>
   </div>
 </div>
 
@@ -413,46 +400,24 @@ option{background:var(--bg3)}
 <div class="toast" id="toast">Request sent — we will be in touch within 24 hours.</div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-// SECURITY & UTILITY FUNCTIONS
-// ══════════════════════════════════════════════════════════════
-
-// Input sanitization function
+// UTILITY FUNCTIONS
 function sanitizeInput(str) {
   const div = document.createElement('div');
   div.textContent = str;
   return div.innerHTML;
 }
 
-// Email validation
 function isValidEmail(email) {
   const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return re.test(String(email).toLowerCase()) && email.length <= 255;
 }
 
-// ══════════════════════════════════════════════════════════════
 // UI LOGIC
-// ══════════════════════════════════════════════════════════════
-
 const nav = document.getElementById('nav');
 window.addEventListener('scroll', () => nav.classList.toggle('s', scrollY > 60));
 
 const obs = new IntersectionObserver(entries => entries.forEach(e => { if(e.isIntersecting) e.target.classList.add('on'); }), {threshold:.15});
 document.querySelectorAll('.fu').forEach(el => obs.observe(el));
-
-const cobs = new IntersectionObserver(entries => entries.forEach(e => {
-  if(!e.isIntersecting) return;
-  const t = parseInt(e.target.dataset.target);
-  if(isNaN(t)) return;
-  let n = 0, step = t / 60;
-  const tick = setInterval(() => {
-    n = Math.min(n + step, t);
-    e.target.textContent = Math.floor(n);
-    if(n >= t) clearInterval(tick);
-  }, 16);
-  cobs.unobserve(e.target);
-}), {threshold:.5});
-document.querySelectorAll('[data-target]').forEach(el => cobs.observe(el));
 
 let mx=0,my=0,rx=0,ry=0;
 const cd=document.getElementById('cd'),cr=document.getElementById('cr');
@@ -463,46 +428,19 @@ document.querySelectorAll('button,a,.sc,.step').forEach(el => {
   el.addEventListener('mouseleave', () => { cr.style.width='36px'; cr.style.height='36px'; });
 });
 
-function openModal(){ document.getElementById('modal').classList.add('open'); }
-function closeModal(){ document.getElementById('modal').classList.remove('open'); }
+// MODAL FUNCTIONS
 function openContactForm(){ document.getElementById('contact-modal').classList.add('open'); }
 function closeContactForm(){ document.getElementById('contact-modal').classList.remove('open'); }
+function openBooking(){ document.getElementById('booking-modal').classList.add('open'); }
+function closeBooking(){ document.getElementById('booking-modal').classList.remove('open'); }
 function openDemo(){ document.getElementById('dmodal').classList.add('open'); }
 function closeDemo(){ document.getElementById('dmodal').classList.remove('open'); }
 
-document.getElementById('modal').addEventListener('click', e => { if(e.target===document.getElementById('modal')) closeModal(); });
 document.getElementById('contact-modal').addEventListener('click', e => { if(e.target===document.getElementById('contact-modal')) closeContactForm(); });
+document.getElementById('booking-modal').addEventListener('click', e => { if(e.target===document.getElementById('booking-modal')) closeBooking(); });
 document.getElementById('dmodal').addEventListener('click', e => { if(e.target===document.getElementById('dmodal')) closeDemo(); });
 
-// ══════════════════════════════════════════════════════════════
-// BOOKING FORM SUBMIT
-// ══════════════════════════════════════════════════════════════
-
-function submitModal(){
-  const name = document.getElementById('m-name').value.trim();
-  const email = document.getElementById('m-email').value.trim();
-  
-  if(!name || name.length < 2) {
-    document.getElementById('m-name').style.borderColor='#ff6b6b';
-    setTimeout(() => { document.getElementById('m-name').style.borderColor=''; }, 2000);
-    return;
-  }
-  
-  if(!isValidEmail(email)) {
-    document.getElementById('m-email').style.borderColor='#ff6b6b';
-    setTimeout(() => { document.getElementById('m-email').style.borderColor=''; }, 2000);
-    return;
-  }
-
-  closeModal();
-  showToast('Request sent — we will be in touch within 24 hours.', 'success');
-  ['m-name','m-email','m-biz','m-service'].forEach(id => { const el=document.getElementById(id); if(el) el.value=''; });
-}
-
-// ══════════════════════════════════════════════════════════════
-// CONTACT FORM SUBMIT (Server-side API)
-// ══════════════════════════════════════════════════════════════
-
+// CONTACT FORM
 async function submitContactForm() {
   const name = document.getElementById('c-name').value.trim();
   const email = document.getElementById('c-email').value.trim();
@@ -510,7 +448,6 @@ async function submitContactForm() {
   const message = document.getElementById('c-message').value.trim();
   const errorDiv = document.getElementById('c-error');
 
-  // Validation
   if(!name || name.length < 2) {
     showError('Name must be at least 2 characters');
     return;
@@ -528,7 +465,6 @@ async function submitContactForm() {
     return;
   }
 
-  // Disable submit button
   const submitBtn = document.getElementById('c-submit');
   const originalText = submitBtn.textContent;
   submitBtn.disabled = true;
@@ -557,7 +493,6 @@ async function submitContactForm() {
     closeContactForm();
     showToast('Message sent successfully! We\'ll get back to you soon.', 'success');
     
-    // Reset form
     document.getElementById('c-name').value = '';
     document.getElementById('c-email').value = '';
     document.getElementById('c-subject').value = '';
@@ -579,10 +514,95 @@ function showError(msg) {
   errorDiv.style.display = 'block';
 }
 
-// ══════════════════════════════════════════════════════════════
-// TOAST NOTIFICATIONS
-// ══════════════════════════════════════════════════════════════
+// BOOKING FORM
+async function submitBooking() {
+  const firstName = document.getElementById('b-fname').value.trim();
+  const lastName = document.getElementById('b-lname').value.trim();
+  const email = document.getElementById('b-email').value.trim();
+  const phone = document.getElementById('b-phone').value.trim();
+  const company = document.getElementById('b-company').value.trim();
+  const needs = document.getElementById('b-needs').value.trim();
+  const errorDiv = document.getElementById('b-error');
 
+  if (!firstName || firstName.length < 2) {
+    showBookingError('First name must be at least 2 characters');
+    return;
+  }
+  if (!lastName || lastName.length < 2) {
+    showBookingError('Last name must be at least 2 characters');
+    return;
+  }
+  if (!isValidEmail(email)) {
+    showBookingError('Please enter a valid email address');
+    return;
+  }
+  if (!phone || phone.length < 5) {
+    showBookingError('Please enter a valid phone number');
+    return;
+  }
+  if (!company || company.length < 2) {
+    showBookingError('Company name is required');
+    return;
+  }
+  if (!needs || needs.length < 10) {
+    showBookingError('Please tell us more about your needs (at least 10 characters)');
+    return;
+  }
+
+  const submitBtn = document.getElementById('b-submit');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Sending...';
+  submitBtn.style.opacity = '0.6';
+  errorDiv.style.display = 'none';
+
+  try {
+    const response = await fetch('/api/booking', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        firstName: sanitizeInput(firstName),
+        lastName: sanitizeInput(lastName),
+        email: sanitizeInput(email),
+        phone: sanitizeInput(phone),
+        company: sanitizeInput(company),
+        needs: sanitizeInput(needs),
+        timestamp: new Date().toISOString()
+      })
+    });
+
+    if (!response.ok) {
+      const data = await response.json();
+      throw new Error(data.error || `Server error: ${response.status}`);
+    }
+
+    closeBooking();
+    showToast('Booking request sent! We\'ll contact you within 24 hours.', 'success');
+    
+    document.getElementById('b-fname').value = '';
+    document.getElementById('b-lname').value = '';
+    document.getElementById('b-email').value = '';
+    document.getElementById('b-phone').value = '';
+    document.getElementById('b-company').value = '';
+    document.getElementById('b-needs').value = '';
+
+  } catch (error) {
+    console.error('Booking form error:', error);
+    showBookingError(error.message || 'Failed to send booking. Please try again.');
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+    submitBtn.style.opacity = '1';
+  }
+}
+
+function showBookingError(msg) {
+  const errorDiv = document.getElementById('b-error');
+  errorDiv.textContent = msg;
+  errorDiv.style.display = 'block';
+}
+
+// TOAST
 function showToast(msg, type = 'info') {
   const t = document.getElementById('toast');
   t.textContent = msg;
@@ -592,16 +612,13 @@ function showToast(msg, type = 'info') {
 
 document.addEventListener('keydown', e => { 
   if(e.key==='Escape'){ 
-    closeModal(); 
     closeContactForm(); 
+    closeBooking(); 
     closeDemo(); 
   } 
 });
 
-// ══════════════════════════════════════════════════════════════
-// CHAT WIDGET — SECURE XSS-PROOF RENDERING
-// ══════════════════════════════════════════════════════════════
-
+// CHAT WIDGET
 const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
 const geminiSubmit = document.getElementById('gemini-submit');
@@ -650,7 +667,6 @@ function addMsg(role, text){
     bubble.style.cssText += ';background:#fff;color:#0A0A0A;border-radius:10px 0 10px 10px;font-weight:500';
   }
   
-  // SECURITY FIX: Use textContent instead of innerHTML to prevent XSS
   bubble.textContent = text;
 
   col.appendChild(label);
@@ -678,14 +694,7 @@ function addTyping(){
 
   const bubble = document.createElement('div');
   bubble.style.cssText = 'background:var(--bg3);border:1px solid var(--border);border-radius:0 10px 10px 10px;padding:14px 18px;display:flex;gap:5px;align-items:center';
-  bubble.innerHTML = `
-    <style>
-      @keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}
-      .td{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}
-      .td:nth-child(2){animation-delay:.2s}
-      .td:nth-child(3){animation-delay:.4s}
-    </style>
-    <div class="td"></div><div class="td"></div><div class="td"></div>`;
+  bubble.innerHTML = `<style>@keyframes blink{0%,80%,100%{opacity:.2}40%{opacity:1}}.td{width:6px;height:6px;border-radius:50%;background:var(--muted);animation:blink 1.2s infinite}.td:nth-child(2){animation-delay:.2s}.td:nth-child(3){animation-delay:.4s}</style><div class="td"></div><div class="td"></div><div class="td"></div>`;
 
   col.appendChild(label);
   col.appendChild(bubble);
@@ -706,48 +715,6 @@ function typeWriter(bubble, text, speed=18){
   }, speed);
 }
 
-function addBookingButton(){
-  const wrap = document.createElement('div');
-  wrap.style.cssText = 'display:flex;gap:12px;align-items:flex-start;margin-top:12px';
-
-  const av = document.createElement('div');
-  av.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:20px';
-  av.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
-
-  const col = document.createElement('div');
-  const label = document.createElement('div');
-  label.style.cssText = 'font-size:11px;color:var(--dim);margin-bottom:6px;font-weight:500;letter-spacing:.04em';
-  label.textContent = 'MOH AI';
-
-  const btnContainer = document.createElement('div');
-  btnContainer.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap';
-  
-  const bookBtn = document.createElement('button');
-  bookBtn.textContent = 'Book Now';
-  bookBtn.style.cssText = 'background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s;hover';
-  bookBtn.onmouseover = () => bookBtn.style.background = '#ddd';
-  bookBtn.onmouseout = () => bookBtn.style.background = 'var(--text)';
-  bookBtn.onclick = () => {
-    closeChat();
-    openContactForm();
-  };
-
-  btnContainer.appendChild(bookBtn);
-  col.appendChild(label);
-  col.appendChild(btnContainer);
-  wrap.appendChild(av);
-  wrap.appendChild(col);
-  chatMessages.appendChild(wrap);
-  scrollChat();
-}
-
-function closeChat(){
-  const chatWidget = document.getElementById('gemini-widget');
-  if(chatWidget) {
-    chatWidget.style.display = 'none';
-  }
-}
-
 async function submitGemini(){
   const message = geminiInput.value.trim();
   if(!message || message.length > 2000) return;
@@ -766,7 +733,6 @@ async function submitGemini(){
   const typing = addTyping();
 
   let replyText = '';
-  let shouldShowBookButton = false;
 
   try {
     const res = await fetch('/api/chat', {
@@ -785,19 +751,16 @@ async function submitGemini(){
     
     const data = await res.json();
 
-    // Extract response from API
     replyText = data.response || data.text || data.answer || '';
-    shouldShowBookButton = data.showBookButton || false;
     
     if(!replyText) {
-      replyText = 'Sorry, I\'m having trouble processing that right now. Please try again in a moment.';
+      replyText = 'Sorry, I\'m having trouble responding right now. Please try again in a moment.';
     }
 
     if(typeof replyText !== 'string') replyText = JSON.stringify(replyText);
 
   } catch(err){
-    replyText = `❌ ${err.message}`;
-    shouldShowBookButton = false;
+    replyText = 'I\'m currently unavailable. Please try again in a few moments.';
   }
 
   chatContext.push({
@@ -808,12 +771,6 @@ async function submitGemini(){
   typing.remove();
   const bubble = addMsg('ai', '');
   typeWriter(bubble, replyText);
-
-  if(shouldShowBookButton) {
-    setTimeout(() => {
-      addBookingButton();
-    }, replyText.length * 18 + 500);
-  }
 
   geminiSubmit.disabled = false;
   geminiSubmit.style.opacity = '1';
