@@ -303,7 +303,7 @@ option{background:var(--bg3)}
           <div>
             <div style="font-size:11px;color:var(--dim);margin-bottom:6px;font-weight:500;letter-spacing:.04em">GEMINI</div>
             <div style="background:var(--bg3);border:1px solid var(--border);border-radius:0 10px 10px 10px;padding:12px 16px;font-size:14px;color:var(--text);line-height:1.65;max-width:480px">
-              Hi! I'm <strong>Moh AI</strong> — the automation consultant for Moh Agency. Ask me anything about AI integration, Make.com workflows, or how we can automate your business. I'm here to help. ✦
+              Hi! I'm Moh AI, your automation intake assistant for Moh Agency. Tell me about a business process you'd like to automate, and I'll evaluate if it's within our scope and provide a quick breakdown with pricing. What would you like to automate?
             </div>
           </div>
         </div>
@@ -312,7 +312,7 @@ option{background:var(--bg3)}
       <div style="height:1px;background:var(--border)"></div>
 
       <div style="padding:16px 20px;display:flex;gap:10px;align-items:flex-end;background:var(--bg2)">
-        <textarea id="gemini-input" rows="1" placeholder="Ask Moh AI anything..." spellcheck="false"
+        <textarea id="gemini-input" rows="1" placeholder="Describe your automation need..." spellcheck="false"
           style="flex:1;background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:12px 14px;color:var(--text);font-family:var(--f);font-size:13px;resize:none;outline:none;transition:border-color .2s;line-height:1.5;max-height:120px;overflow-y:auto;-webkit-appearance:none;appearance:none"></textarea>
         <button id="gemini-submit" style="width:38px;height:38px;background:var(--text);border:none;border-radius:9px;cursor:none;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .2s;margin-bottom:1px"
           type="button">
@@ -320,7 +320,7 @@ option{background:var(--bg3)}
         </button>
       </div>
     </div>
-  <p style="font-size:11px;color:var(--dim);text-align:center;margin-top:12px">Moh AI · Powered by Make.com & Gemini · Built by Moh Agency</p>
+  <p style="font-size:11px;color:var(--dim);text-align:center;margin-top:12px">Moh AI · Intake Assistant · Built by Moh Agency</p>
   </div>
 </section>
 
@@ -388,7 +388,7 @@ option{background:var(--bg3)}
       <div style="display:grid;grid-template-columns:auto 1fr;gap:8px 16px;align-items:center">
         <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 1</span><span>Telegram Watch trigger fires on new message</span>
         <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 2</span><span>YouTube transcript extracted via HTTP module</span>
-        <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 3</span><span>Gemini 1.5 Flash generates structured Arabic summary</span>
+        <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 3</span><span>Gemini 2.0 Flash generates structured Arabic summary</span>
         <span style="color:var(--dim);font-size:11px;text-transform:uppercase;letter-spacing:.08em">Step 4</span><span>Result posted back to Telegram group</span>
       </div>
     </div>
@@ -759,8 +759,6 @@ function typeWriter(bubble, text, speed=18){
     if(i >= text.length) clearInterval(tick);
   }, speed);
 }
-
-// Replace the submitGemini function in your index.html with this:
 
 async function submitGemini(){
   const message = geminiInput.value.trim();
