@@ -7,8 +7,6 @@ const ALLOWED_ORIGINS = [
   'http://localhost:3000'
 ];
 
-const EMAIL_REGEX = /^[^\s@]{1,64}@[^\s@]{1,255}\.[^\s@]{2,}$/;
-
 const rateLimitMap = new Map();
 const RATE_LIMIT_MAX = 10;
 const RATE_LIMIT_WINDOW = 120000;
