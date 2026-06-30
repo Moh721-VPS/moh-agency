@@ -67,16 +67,29 @@ When appropriate, encourage the user to book a discovery call. Subtly suggest th
 
 Be warm, professional, and genuinely helpful. Ask clarifying questions to understand their business challenges.`;
 
+    // Add system prompt as first user message if not already there
+    const contentsWithSystem = [
+      {
+        role: 'user',
+        parts: [{ text: systemPrompt }]
+      },
+      {
+        role: 'model',
+        parts: [{ text: 'I understand. I\'m Moh AI, ready to help!' }]
+      },
+      ...contents
+    ];
+
     console.log('🚀 Calling Gemini API...');
+    console.log('Contents being sent:', JSON.stringify(contentsWithSystem).substring(0, 300));
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          system: systemPrompt,
-          contents: contents,
+          contents: contentsWithSystem,
           generationConfig: {
             temperature: 0.7,
             topP: 0.9,
