@@ -46,54 +46,28 @@ export default async function handler(req, res) {
       });
     }
 
+    const systemPrompt = `You are Moh AI, the intake assistant for Moh Agency — a WhatsApp & Make.com automation agency in Doha, Qatar. ONLY help with automation workflows within our business scope: AI integration, chatbots, WhatsApp automation, workflow automation, and CRM sync. When a lead describes a workflow, first evaluate if it is possible and within our business scope. If it requires development outside our stack (e.g., building native mobile apps, custom website development from scratch, heavy coding outside of APIs/Make.com), politely explain that it falls outside our core specialization. If it IS within our scope, analyze their requirements (estimate steps, triggers/actions, and platforms needed) and provide a quick breakdown along with the exact cost in QAR. Pricing Tiers: 1) Basic Tier (100 QAR): 1 trigger/action, 1 platform. 2) Standard Tier (150 QAR): Up to 5 steps, 5 triggers/actions, 2 platforms. 3) Premium Tier (285 QAR): Complex multistep, 10 triggers/actions, 5 platforms, 2 Make scenarios, 1 custom API configuration. If the lead responds to a follow-up question by saying no, or indicates they have no further questions or other workflows to add, immediately guide them to wrap up and proceed with the current proposal. If a lead asks anything completely unrelated, politely decline and ask: 'What business process would you like to automate?' Keep responses concise and professional. CRITICAL FORMATTING RULE: Do not use any markdown formatting or asterisk symbols. You MUST use standard line breaks for any newlines or lists. Do NOT use HTML tags. Example format:\n1) First step\n2) Second step\n3) Third step`;
+
     // Transform frontend format to Gemini API format
     const contents = history.map(msg => ({
       role: msg.role === 'user' ? 'user' : 'model',
       parts: [{ text: msg.parts[0].text }]
     }));
 
-    const systemPrompt = `You are Moh AI, the automation consultant for Moh Agency — a specialized AI automation agency based in Doha, Qatar. 
-
-Your role is to help prospects understand how AI integration and Make.com automation can transform their business. Be conversational, knowledgeable, and helpful.
-
-Key things to know about Moh Agency:
-- We specialize in AI Integration (Gemini, Claude), Make.com automation workflows, and custom solutions
-- We're based in Doha, Qatar but work with clients globally
-- Our services include: AI chatbots, content pipelines, workflow automation, lead capture, data sync
-- We follow a 4-step process: Discovery → Design → Build → Deploy
-- We typically deliver solutions within 90 days
-
-When appropriate, encourage the user to book a discovery call. Subtly suggest this but don't be pushy. Focus on understanding their needs first.
-
-Be warm, professional, and genuinely helpful. Ask clarifying questions to understand their business challenges.`;
-
-    // Add system prompt as first user message if not already there
-    const contentsWithSystem = [
-      {
-        role: 'user',
-        parts: [{ text: systemPrompt }]
-      },
-      {
-        role: 'model',
-        parts: [{ text: 'I understand. I\'m Moh AI, ready to help!' }]
-      },
-      ...contents
-    ];
-
     console.log('🚀 Calling Gemini API...');
-    console.log('Contents being sent:', JSON.stringify(contentsWithSystem).substring(0, 300));
 
     const response = await fetch(
-      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          contents: contentsWithSystem,
+          system: systemPrompt,
+          contents: contents,
           generationConfig: {
             temperature: 0.7,
             topP: 0.9,
-            maxOutputTokens: 500
+            maxOutputTokens: 800
           }
         })
       }
@@ -124,10 +98,30 @@ Be warm, professional, and genuinely helpful. Ask clarifying questions to unders
       });
     }
 
+    // Try to parse as JSON (Gemini should return JSON per the prompt)
+    let parsedResponse;
+    try {
+      parsedResponse = JSON.parse(responseText);
+      console.log('✅ Parsed JSON response:', parsedResponse);
+    } catch (e) {
+      console.warn('⚠️ Could not parse Gemini response as JSON, wrapping it');
+      // If Gemini doesn't return JSON, wrap it
+      parsedResponse = {
+        response: responseText,
+        showBookButton: false
+      };
+    }
+
+    // Ensure response has required fields
+    if (!parsedResponse.response) {
+      parsedResponse.response = responseText;
+    }
+    if (typeof parsedResponse.showBookButton !== 'boolean') {
+      parsedResponse.showBookButton = false;
+    }
+
     console.log('✅ Chat request successful');
-    return res.status(200).json({
-      response: responseText
-    });
+    return res.status(200).json(parsedResponse);
 
   } catch (error) {
     console.error('❌ Endpoint error:', error.message);
