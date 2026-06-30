@@ -760,6 +760,8 @@ function typeWriter(bubble, text, speed=18){
   }, speed);
 }
 
+// Replace the submitGemini function in your index.html with this:
+
 async function submitGemini(){
   const message = geminiInput.value.trim();
   if(!message || message.length > 2000) return;
@@ -778,6 +780,7 @@ async function submitGemini(){
   const typing = addTyping();
 
   let replyText = '';
+  let showBookButton = false;
 
   try {
     const res = await fetch('/api/chat', {
@@ -796,7 +799,9 @@ async function submitGemini(){
     
     const data = await res.json();
 
+    // Extract response and showBookButton flag
     replyText = data.response || data.text || data.answer || '';
+    showBookButton = data.showBookButton === true;
     
     if(!replyText) {
       replyText = 'Sorry, I\'m having trouble responding right now. Please try again in a moment.';
@@ -805,7 +810,9 @@ async function submitGemini(){
     if(typeof replyText !== 'string') replyText = JSON.stringify(replyText);
 
   } catch(err){
+    console.error('Chat error:', err);
     replyText = 'I\'m currently unavailable. Please try again in a few moments.';
+    showBookButton = false;
   }
 
   chatContext.push({
@@ -816,6 +823,13 @@ async function submitGemini(){
   typing.remove();
   const bubble = addMsg('ai', '');
   typeWriter(bubble, replyText);
+
+  // If showBookButton is true, add the book a call button after the AI response
+  if(showBookButton) {
+    setTimeout(() => {
+      addBookingButton();
+    }, replyText.length * 18 + 500); // Wait for typewriter to finish
+  }
 
   geminiSubmit.disabled = false;
   geminiSubmit.style.opacity = '1';
