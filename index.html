@@ -618,6 +618,51 @@ document.addEventListener('keydown', e => {
   } 
 });
 
+// BOOKING BUTTON FUNCTION - GLOBAL SCOPE
+function addBookingButton(){
+  console.log('addBookingButton called - rendering button');
+  
+  const wrap = document.createElement('div');
+  wrap.style.cssText = 'display:flex;gap:12px;align-items:flex-start;margin-top:12px;margin-bottom:12px';
+
+  const av = document.createElement('div');
+  av.style.cssText = 'width:30px;height:30px;border-radius:50%;background:var(--bg3);border:1px solid var(--border2);flex-shrink:0;display:flex;align-items:center;justify-content:center;margin-top:0px';
+  av.innerHTML = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>`;
+
+  const col = document.createElement('div');
+  const btnContainer = document.createElement('div');
+  btnContainer.style.cssText = 'display:flex;gap:8px;flex-wrap:wrap;align-items:center';
+  
+  const bookBtn = document.createElement('button');
+  bookBtn.textContent = 'Book a Call';
+  bookBtn.style.cssText = 'background:var(--text);color:var(--bg);border:none;border-radius:8px;padding:10px 18px;font-family:var(--f);font-size:13px;font-weight:600;cursor:pointer;transition:background .2s';
+  bookBtn.onmouseover = () => bookBtn.style.background = '#ddd';
+  bookBtn.onmouseout = () => bookBtn.style.background = 'var(--text)';
+  bookBtn.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('Book button clicked');
+    openBooking();
+  };
+
+  btnContainer.appendChild(bookBtn);
+  col.appendChild(btnContainer);
+  wrap.appendChild(av);
+  wrap.appendChild(col);
+  
+  const chatMessages = document.getElementById('chat-messages');
+  chatMessages.appendChild(wrap);
+  
+  console.log('Button added to DOM, scrolling');
+  chatMessages.scrollTop = chatMessages.scrollHeight;
+  
+  // Force scroll to ensure button is visible
+  setTimeout(() => {
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+    console.log('Force scrolled to bottom');
+  }, 100);
+}
+
 // CHAT WIDGET
 const chatMessages = document.getElementById('chat-messages');
 const geminiInput  = document.getElementById('gemini-input');
