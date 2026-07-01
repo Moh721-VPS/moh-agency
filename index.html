@@ -148,137 +148,17 @@ option{background:var(--bg3)}
 .fu.on{opacity:1;transform:translateY(0)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
-/* MOBILE RESPONSIVE */
-@media(max-width:768px){
-  /* NAV */
-  nav{padding:16px 20px;gap:16px}
-  .logo{font-size:13px}
-  .nl{gap:16px;display:none}
-  .nbtn{padding:8px 16px;font-size:12px}
-
-  /* HERO */
-  #hero{min-height:auto;padding:120px 20px 60px;gap:16px}
-  h1{font-size:clamp(32px,7vw,48px);margin-bottom:16px}
-  .hsub{font-size:14px;margin-bottom:32px}
-  .hbtns{flex-direction:column;gap:10px;width:100%}
-  .bw,.bg{padding:12px 20px;font-size:13px;width:100%}
-
-  /* CHIPS */
+@media(max-width:960px){
   .chips{display:none}
-
-  /* TICKER */
-  #ticker{padding:32px 0}
-  .tlbl{font-size:10px;margin-bottom:16px}
-  .ttrack{gap:40px}
-  .pchip{font-size:12px}
-
-  /* SERVICES */
-  #services{padding:60px 20px}
-  .sh{margin-bottom:40px;flex-direction:column;gap:12px}
-  .stitle{font-size:24px}
   .sgrid{grid-template-columns:1fr}
-  .sc{padding:32px 24px}
-  .snum{margin-bottom:20px}
-  .sicon{width:28px;height:28px}
-  .scard-title{font-size:16px;margin-bottom:10px}
-  .sdesc{font-size:12px}
-  .sarrow{width:24px;height:24px;bottom:24px;right:24px}
-
-  /* PROCESS */
-  #process{padding:60px 20px}
-  .steps{margin-top:32px}
-  .step{grid-template-columns:40px 1fr;gap:16px;padding:24px 0}
-  .sidx{font-size:10px}
-  .sname{font-size:16px}
-  .sinfo{font-size:12px}
-
-  /* DEMO STRIP */
-  #demo-strip{margin:0 20px;padding:32px 20px;flex-direction:column;align-items:flex-start;gap:24px}
-  .ds-left h3{font-size:18px}
-  .ds-left p{font-size:13px}
-  .ds-right{flex-direction:column;width:100%}
-  .ds-right button{width:100%}
-
-  /* CTA */
-  #cta{padding:60px 20px}
-  .ch{font-size:clamp(24px,5vw,36px);margin-bottom:12px}
-  .csub{font-size:13px;margin-bottom:24px}
-  .cbtns{flex-direction:column;gap:10px;width:100%}
-  .cbtns button{width:100%}
-
-  /* FOOTER */
-  footer{padding:24px 20px;flex-direction:column;gap:16px;text-align:center}
-  .fright{gap:16px}
-
-  /* MODAL */
-  .mbox{padding:28px 20px;width:95%}
-  .mtitle{font-size:18px}
-  .msub{font-size:13px}
-  .mi{padding:10px 12px;font-size:12px;margin-bottom:8px}
-  .msubmit{padding:12px;font-size:13px}
-
-  /* TOAST */
-  .toast{bottom:20px;padding:12px 18px;font-size:12px;left:20px;right:20px;transform:translateX(0) translateY(80px)}
-  .toast.show{transform:translateX(0) translateY(0)}
-}
-
-@media(max-width:480px){
-  /* NAV */
-  nav{padding:12px 16px}
-  .logo{font-size:12px}
-  .nbtn{padding:7px 14px;font-size:11px}
-
-  /* HERO */
-  #hero{padding:100px 16px 48px}
-  h1{font-size:clamp(28px,6vw,40px)}
-  .hsub{font-size:13px;margin-bottom:24px}
-
-  /* SERVICES */
-  #services{padding:48px 16px}
-  .stitle{font-size:20px}
-  .sc{padding:24px 18px}
-  .scard-title{font-size:14px}
-  .sdesc{font-size:11px;line-height:1.6}
-
-  /* PROCESS */
-  #process{padding:48px 16px}
-  .step{padding:18px 0}
-  .sidx{font-size:9px}
-  .sname{font-size:14px}
-  .sinfo{font-size:11px;line-height:1.6}
-
-  /* DEMO STRIP */
-  #demo-strip{margin:0 16px;padding:24px 16px}
-  .ds-left h3{font-size:16px}
-  .ds-left p{font-size:12px}
-
-  /* CTA */
-  #cta{padding:48px 16px}
-  .ctag{font-size:10px}
-  .ch{font-size:clamp(20px,5vw,30px)}
-
-  /* FOOTER */
-  footer{padding:20px 16px}
-  .flogo{font-size:12px}
-  .fright{font-size:10px;gap:12px}
-}
-
-/* CHAT WIDGET MOBILE */
-@media(max-width:768px){
-  #gemini-widget{padding:60px 20px}
-  #chat-window{border-radius:12px}
-  #chat-messages{height:300px;padding:20px 16px 8px}
-  #gemini-input{font-size:12px;padding:10px 12px;border-radius:8px}
-  #gemini-submit{width:34px;height:34px;margin-bottom:0}
-  .msg-ai,.msg-user{gap:10px}
-}
-
-@media(max-width:480px){
-  #gemini-widget{padding:48px 16px}
-  #chat-messages{height:240px;padding:16px 12px 6px;gap:12px}
-  #chat-messages>div{font-size:13px}
-  #gemini-input{font-size:11px;padding:8px 10px;max-height:80px}
-  #gemini-submit{width:30px;height:30px}
+  #demo-strip{flex-direction:column;align-items:flex-start}
+  .step{grid-template-columns:48px 1fr;grid-template-rows:auto auto}
+  .sinfo{grid-column:2}
+  nav{padding:18px 24px}
+  #hero,#services,#process,#cta{padding-left:24px;padding-right:24px}
+  #demo-strip{margin:0 24px;padding:36px 28px}
+  footer{padding:28px 24px}
+  .sh{padding:0}
 }
 </style>
 </head>
