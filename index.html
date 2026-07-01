@@ -620,8 +620,6 @@ document.addEventListener('keydown', e => {
 
 // BOOKING BUTTON FUNCTION - GLOBAL SCOPE
 function addBookingButton(){
-  console.log('addBookingButton called - rendering button');
-  
   const wrap = document.createElement('div');
   wrap.style.cssText = 'display:flex;gap:12px;align-items:flex-start;margin-top:12px;margin-bottom:12px';
 
@@ -641,7 +639,6 @@ function addBookingButton(){
   bookBtn.onclick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    console.log('Book button clicked');
     openBooking();
   };
 
@@ -652,15 +649,7 @@ function addBookingButton(){
   
   const chatMessages = document.getElementById('chat-messages');
   chatMessages.appendChild(wrap);
-  
-  console.log('Button added to DOM, scrolling');
   chatMessages.scrollTop = chatMessages.scrollHeight;
-  
-  // Force scroll to ensure button is visible
-  setTimeout(() => {
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-    console.log('Force scrolled to bottom');
-  }, 100);
 }
 
 // CHAT WIDGET
@@ -750,13 +739,16 @@ function addTyping(){
   return wrap;
 }
 
-function typeWriter(bubble, text, speed=18){
+function typeWriter(bubble, text, speed=18, onComplete){
   bubble.textContent = '';
   let i = 0;
   const tick = setInterval(() => {
     bubble.textContent += text[i++];
     scrollChat();
-    if(i >= text.length) clearInterval(tick);
+    if(i >= text.length) {
+      clearInterval(tick);
+      if(onComplete) onComplete();
+    }
   }, speed);
 }
 
@@ -778,6 +770,7 @@ async function submitGemini(){
   const typing = addTyping();
 
   let replyText = '';
+  let shouldShowBookButton = false;
 
   try {
     const res = await fetch('/api/chat', {
@@ -797,6 +790,7 @@ async function submitGemini(){
     const data = await res.json();
 
     replyText = data.response || data.text || data.answer || '';
+    shouldShowBookButton = data.showBookButton === true;
     
     if(!replyText) {
       replyText = 'Sorry, I\'m having trouble responding right now. Please try again in a moment.';
@@ -806,6 +800,7 @@ async function submitGemini(){
 
   } catch(err){
     replyText = 'I\'m currently unavailable. Please try again in a few moments.';
+    shouldShowBookButton = false;
   }
 
   chatContext.push({
@@ -815,7 +810,12 @@ async function submitGemini(){
 
   typing.remove();
   const bubble = addMsg('ai', '');
-  typeWriter(bubble, replyText);
+  
+  typeWriter(bubble, replyText, 18, () => {
+    if(shouldShowBookButton === true) {
+      addBookingButton();
+    }
+  });
 
   geminiSubmit.disabled = false;
   geminiSubmit.style.opacity = '1';
